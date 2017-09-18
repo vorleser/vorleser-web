@@ -41,6 +41,29 @@ module.exports = {
                     },
                     "postcss-loader"
                 ]
+            },
+            {
+                test: /\.scss$/,
+                use: [
+                    {
+                        loader: "style-loader" // creates style nodes from JS strings
+                    },
+                    {
+                        loader: "css-loader", // translates CSS into CommonJS
+                        options: {
+                            modules: true, // default is false
+                            sourceMap: true,
+                            importLoaders: 1,
+                            localIdentName: "[name]--[local]--[hash:base64:8]"
+                        }
+                    },
+                    {
+                        loader: "sass-loader", // compiles Sass to CSS
+                        options: {
+                            sourceMap: true
+                        }
+                    }
+                ]
             }
         ]
     },
