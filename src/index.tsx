@@ -1,9 +1,11 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import AppBar from 'react-toolbox/lib/app_bar';
+import ThemeProvider from 'react-toolbox/lib/ThemeProvider';
 
 async function main() {
     ReactDOM.render(
-        <h1>LOL</h1>,
+        <AppBar title="Vorleser-Web" leftIcon="menu"></AppBar>,
         document.getElementById("root")
     )
 }
