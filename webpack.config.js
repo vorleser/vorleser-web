@@ -7,10 +7,13 @@ const webpack = require('webpack')
 const extractCSS = new ExtractTextPlugin('[name].css')
 
 module.exports = {
-    entry: "./src/index.tsx",
+    entry: {
+        vendors: [ "webpack-material-design-icons" ],
+        bundle: "./src/index.tsx",
+    },
     output: {
         path: __dirname + "/dist",
-        filename: "bundle.js",
+        filename: "[name].js",
         publicPath: "/dist"
     },
     resolve: {
@@ -43,11 +46,13 @@ module.exports = {
                 ]
             },
             {
+                test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|svg|woff2)$/,
+                loader: "file-loader?name=./fonts/[name].[ext]"
+            },
+            {
                 test: /\.scss$/,
                 use: [
-                    {
-                        loader: "style-loader" // creates style nodes from JS strings
-                    },
+                    "style-loader", // creates style nodes from JS strings
                     {
                         loader: "css-loader", // translates CSS into CommonJS
                         options: {
@@ -57,14 +62,15 @@ module.exports = {
                             localIdentName: "[name]--[local]--[hash:base64:8]"
                         }
                     },
+                    "resolve-url-loader", // fix import errors
                     {
                         loader: "sass-loader", // compiles Sass to CSS
                         options: {
                             sourceMap: true
                         }
-                    }
+                    },
                 ]
-            }
+            },
         ]
     },
     plugins: [
