@@ -30,27 +30,11 @@ module.exports = {
                 loader: "awesome-typescript-loader",
             },
             {
-                test: /\.css$/,
-                use: [
-                    "style-loader",
-                    {
-                        loader: "css-loader",
-                        options: {
-                            modules: true, // default is false
-                            sourceMap: true,
-                            importLoaders: 1,
-                            localIdentName: "[name]--[local]--[hash:base64:8]"
-                        }
-                    },
-                    "postcss-loader"
-                ]
-            },
-            {
                 test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|svg|woff2)$/,
                 loader: "file-loader?name=./fonts/[name].[ext]"
             },
             {
-                test: /\.scss$/,
+                test: /\.s?css$/,
                 use: [
                     "style-loader", // creates style nodes from JS strings
                     {
@@ -58,11 +42,22 @@ module.exports = {
                         options: {
                             modules: true, // default is false
                             sourceMap: true,
-                            importLoaders: 1,
+                            importLoaders: 3,
                             localIdentName: "[name]--[local]--[hash:base64:8]"
                         }
                     },
-                    "resolve-url-loader", // fix import errors
+                    {
+                        loader: "postcss-loader",
+                        options: {
+                            sourceMap: true
+                        }
+                    },
+                    {
+                        loader: "resolve-url-loader",
+                        options: {
+                            sourceMap: true
+                        }
+                    },
                     {
                         loader: "sass-loader", // compiles Sass to CSS
                         options: {
