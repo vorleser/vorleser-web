@@ -8,7 +8,6 @@ const extractCSS = new ExtractTextPlugin('[name].css')
 
 module.exports = {
     entry: {
-        vendors: [ "webpack-material-design-icons" ],
         bundle: "./src/index.tsx",
     },
     output: {
@@ -17,11 +16,7 @@ module.exports = {
         publicPath: "/dist"
     },
     resolve: {
-        extensions: [".js", ".jsx", ".ts", ".tsx", ".json", ".css"],
-        modules: [
-            path.resolve("./src"),
-            path.resolve("./node_modules")
-        ]
+        extensions: [".js", ".jsx", ".ts", ".tsx", ".json", ".css"]
     },
     module: {
         rules: [
@@ -31,46 +26,39 @@ module.exports = {
             },
             {
                 test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|svg|woff2)$/,
-                loader: "file-loader?name=./fonts/[name].[ext]"
+                use: [
+                    {
+                        loader: "file-loader",
+                        options: {
+                            hash: "sha512",
+                            digest: "hex",
+                            name: "[hash].[ext]"
+                        }
+                    }
+                ]
             },
             {
                 test: /\.s?css$/,
-                use: [
-                    "style-loader", // creates style nodes from JS strings
+                loader: extractCSS.extract([
                     {
-                        loader: "css-loader", // translates CSS into CommonJS
-                        options: {
-                            modules: true, // default is false
+                        loader: "css-loader",
+                        query: {
+                            modules: true,
                             sourceMap: true,
-                            importLoaders: 3,
+                            importLoaders: 1,
                             localIdentName: "[name]--[local]--[hash:base64:8]"
                         }
                     },
                     {
                         loader: "postcss-loader",
-                        options: {
+                        query: {
                             sourceMap: true
                         }
-                    },
-                    {
-                        loader: "resolve-url-loader",
-                        options: {
-                            sourceMap: true
-                        }
-                    },
-                    {
-                        loader: "sass-loader", // compiles Sass to CSS
-                        options: {
-                            sourceMap: true
-                        }
-                    },
-                ]
+                    }
+                ])
             },
         ]
     },
-    plugins: [
-        postcss()
-    ],
     devtool: "source-map",
     devServer: {
         port: 3000,
@@ -81,21 +69,6 @@ module.exports = {
         }
     },
     plugins: [
-        new webpack.LoaderOptionsPlugin({
-            postcss: () => {
-                return [
-                  /* eslint-disable global-require */
-                  require('postcss-cssnext')({
-                    features: {
-                      customProperties: {
-                        variables: reactToolboxVariables,
-                      },
-                    },
-                  }),
-                  require('postcss-modules-values'),
-                  /* eslint-enable global-require */
-                ];
-            }
-        })
+        extractCSS
     ]
 }
