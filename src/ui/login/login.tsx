@@ -6,7 +6,9 @@ import IconButton from 'material-ui/IconButton';
 import TextField from 'material-ui/TextField';
 import MenuIcon from 'material-ui-icons/Menu';
 import './style.scss'
+import { inject } from 'mobx-react';
 
+@inject("login")
 class LoginForm extends React.Component<undefined, undefined> {
     render() {
         return (
