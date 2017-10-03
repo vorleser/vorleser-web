@@ -3,10 +3,10 @@ use domafic::tags::{button, div, h1, form, input, attributes, Tag};
 use domafic::AttributeValue::{Str, OwnedStr, Bool};
 use domafic::listener::on;
 use domafic::{DomNode, DomNodes, DomValue, KeyValue, Listeners};
+#[cfg(target_os = "emscripten")]
+use domafic::web_render::{run, JsIo, HttpRequest, HttpResult};
 
 // If rendering client-side with asm.js or WebAssembly:
-#[cfg(target_os = "emscripten")]
-use domafic::web_render::{run, JsIo};
 #[cfg(target_os = "emscripten")]
 use domafic::KeyIter;
 
@@ -27,29 +27,80 @@ struct LoginState {
     password: String,
 }
 
+enum Message {
+    Login,
+    Register,
+}
+
 #[derive(Debug)]
 enum Msg {
-    Increment,
-    Decrement,
     Submit,
     UpdateUsername(String),
     UpdatePassword(String),
+    Received(String),
+    LoggedIn,
+    ConnectionError(String),
     None
 }
 
 
-impl State {
+// impl State {
+//     fn new() -> Self {
+//         State {
+//             login_state: LoginState{username: "".to_owned(), password: "".to_owned()},
+//             view: AppView::Login
+//         }
+//     }
+// }
+
+impl LoginState {
     fn new() -> Self {
-        State {
-            login_state: LoginState{username: "".to_owned(), password: "".to_owned()},
-            view: AppView::Login
-        }
+        Self {username: "".to_owned(), password: "".to_owned()}
     }
+
+    #[cfg(target_os = "emscripten")]
+    fn update(&mut self, msg: Msg, js_io: &JsIo<Msg>) {
+        match msg {
+            Msg::UpdateUsername(ref name) => self.username = name.to_owned(),
+            Msg::UpdatePassword(ref pw) => self.password = pw.to_owned(),
+            Msg::Submit => {
+                js_io.http(HttpRequest {
+                    method: "POST",
+                    headers: &[],
+                    url: "localhost:8000/login",
+                    body: "",
+                    timeout_millis: None,
+                }, Box::new(|response: HttpResult|
+                    match response {
+                        Ok(_) => Msg::LoggedIn,
+                        Err(r) => Msg::ConnectionError("Can't login, check your network connection.".to_owned())
+                    }
+                ));
+            }
+            Msg::LoggedIn => println!("Yaaay, logged in!"),
+            _ => {}
+        };
+    }
+
+//     fn render (&self) {
+//     div ((
+//         input((
+//             attributes([
+//                 ("type", Str("text"))
+//                 (
+//                 on("click", |event|
+//                     Msg::Submit
+//                 ),
+//                 )
+//             ]),
+//         ))
+//     ))
+//     }
 }
 
 
 fn main() {
-    let mut state = LoginState{username: "".to_owned(), password: "".to_owned()};
+    let state = LoginState::new();
     let render = |login: &LoginState| {
         div ((
             input((
@@ -94,13 +145,9 @@ fn main() {
         ))
     };
 
-    let update = |state: &mut LoginState, msg: Msg, _: KeyIter, _: &JsIo<Msg>| {
-        match msg {
-            Msg::UpdateUsername(ref name) => state.username = name.to_owned(),
-            Msg::UpdatePassword(ref pw) => state.password = pw.to_owned(),
-            Msg::Submit => println!("Do HTTTP here"),
-            _ => {}
-        };
+    #[cfg(target_os = "emscripten")]
+    let update = |state: &mut LoginState, msg: Msg, _: KeyIter, js_io: &JsIo<Msg>| {
+        state.update(msg, js_io);
     };
 
     // If rendering server-side:
