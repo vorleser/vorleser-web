@@ -4,29 +4,15 @@ import Html.Events exposing (onClick, onInput)
 import Http exposing (jsonBody)
 import Json.Decode
 import Auth
+import Msg exposing (..)
+import Model exposing (..)
 
 main =
     Html.program { init = init, view = view, update = update, subscriptions = subscriptions }
 
-type alias Model =
-    {
-        login_view: LoginView,
-        login_token: Maybe String
-    }
-
 init : (Model, Cmd Msg)
 init =
-    (Model (LoginView  "" "" "") Nothing, Cmd.none)
-
-
-type alias LoginView =
-    { name : String
-    , password : String
-    , password_repeat : String
-    }
-
-type LoginViewMsg = Submit | PasswordChange String | NameChange String | PasswordRepeatChange String
-type Msg = Login (LoginViewMsg) | LoggedIn (Result Http.Error String)
+    (Model (LoginViewModel  "" "") Nothing LoginView, Cmd.none)
 
 update: Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -38,26 +24,14 @@ update msg model =
                 ({ model | login_view = data }, cmd)
         LoggedIn token ->
             case token of
-                Ok str ->
-                    ({ model | login_token = Just str }, Cmd.none)
+                Ok secret ->
+                    ({ model | login_token = Just secret.secret }, Cmd.none)
                 Err e ->
                     (model, Cmd.none)
-            -- case loginMsg of
-            --     _ ->
-            --         (model, Cmd.none)
-                -- PasswordChange ->
-                --     model
-                -- NameChange ->
-                --     model
-                -- PasswordRepeatChange ->
-                --     model
 
-
-loginViewUpdate : LoginViewMsg -> LoginView -> (LoginView, Cmd Msg)
+loginViewUpdate : LoginViewMsg -> LoginViewModel -> (LoginViewModel, Cmd Msg)
 loginViewUpdate msg model =
     case msg of
-        PasswordRepeatChange s ->
-            ({ model | password_repeat = s }, Cmd.none)
         PasswordChange s ->
             ({ model | password = s }, Cmd.none)
         NameChange s ->
@@ -75,7 +49,6 @@ loginView model =
     div [] [
         input [ type_ "text", placeholder "username", onInput NameChange ] []
         , input [ type_ "password", placeholder "password", onInput PasswordChange ] []
-        , input [ type_ "password", placeholder "repeat password", onInput PasswordChange ] []
         , button [ onClick Submit ] [ text "Login"]
         ]
 
@@ -86,6 +59,11 @@ subscriptions model =
 login : String -> String -> Cmd Msg
 login user password =
     let loginData =
-        { name = user, password = password}
+        { email = user, password = password}
     in
-        Http.send LoggedIn (Http.post "localhost:5000" (Http.jsonBody (Auth.loginSchema loginData)) Json.Decode.string)
+        let request =
+            Http.post "http://localhost:8000/api/auth/login"
+                (Http.jsonBody <| Auth.loginEncoder loginData)
+                Auth.sessionSecretDecoder
+        in
+            Http.send LoggedIn request
