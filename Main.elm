@@ -10,18 +10,14 @@ main =
 
 type alias Model =
     {
-        login_view: LoginView
+        login_view: LoginView,
+        login_token: Maybe String
     }
 
 init : (Model, Cmd Msg)
 init =
-    (Model (LoginView  "" "" ""), Cmd.none)
+    (Model (LoginView  "" "" "") Nothing, Cmd.none)
 
-model : Model
-model =
-    {
-        login_view = LoginView  "" "" ""
-    }
 
 type alias LoginView =
     { name : String
@@ -30,16 +26,22 @@ type alias LoginView =
     }
 
 type LoginViewMsg = Submit | PasswordChange String | NameChange String | PasswordRepeatChange String
-type Msg = Login (LoginViewMsg) | LoggedIn
+type Msg = Login (LoginViewMsg) | LoggedIn (Result Http.Error String)
 
 update: Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
         Login loginMsg ->
             let (data, cmd) =
-                (loginViewUpdate loginMsg model.login_view) 
+                (loginViewUpdate loginMsg model.login_view)
             in
                 ({ model | login_view = data }, cmd)
+        LoggedIn token ->
+            case token of
+                Ok str ->
+                    ({ model | login_token = Just str }, Cmd.none)
+                Err e ->
+                    (model, Cmd.none)
             -- case loginMsg of
             --     _ ->
             --         (model, Cmd.none)
@@ -61,7 +63,7 @@ loginViewUpdate msg model =
         NameChange s ->
             ({ model | name = s }, Cmd.none)
         Submit ->
-            (model, Cmd.none)
+            (model, login model.name model.password)
 
 
 view : Model -> Html Msg
@@ -86,7 +88,4 @@ login user password =
     let loginData =
         { name = user, password = password}
     in
-        let request =
-            Http.post "localhost:5000" (Http.jsonBody (Auth.loginSchema loginData)) Json.Decode.string
-        in
-            Http.send LoggedIn request
+        Http.send LoggedIn (Http.post "localhost:5000" (Http.jsonBody (Auth.loginSchema loginData)) Json.Decode.string)
