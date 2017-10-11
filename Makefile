@@ -1,0 +1,2 @@
+build:
+	elm-make --debug
