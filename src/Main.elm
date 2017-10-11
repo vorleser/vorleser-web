@@ -1,3 +1,4 @@
+import View.Login
 import Html exposing (Html, button, div, text, input)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
@@ -42,15 +43,7 @@ loginViewUpdate msg model =
 
 view : Model -> Html Msg
 view model =
-    Html.map Login (loginView model)
-
-loginView: Model -> Html LoginViewMsg
-loginView model =
-    div [] [
-        input [ type_ "text", placeholder "username", onInput NameChange ] []
-        , input [ type_ "password", placeholder "password", onInput PasswordChange ] []
-        , button [ onClick Submit ] [ text "Login"]
-        ]
+    Html.map Login (View.Login.view model)
 
 subscriptions: Model -> Sub Msg
 subscriptions model =
