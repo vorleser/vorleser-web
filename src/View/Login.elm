@@ -15,7 +15,6 @@ import Material
 type alias Mdl =
   Material.Model
 
-
 view: Model -> Html Msg.Msg
 view model =
   Grid.grid [] [
