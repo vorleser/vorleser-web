@@ -10,7 +10,8 @@ type alias Model = {
     loginView: LoginViewModel,
     loginToken: Maybe String,
     currentView: View,
-    mdl: Material.Model
+    mdl: Material.Model,
+    data: String
 }
 
 

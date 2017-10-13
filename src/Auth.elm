@@ -27,14 +27,14 @@ sessionSecretDecoder =
     decode SessionSecret
         |> required "secret" Decode.string
 
-authenticatedGet :
+get :
     Model.Model
     -> String
     -> Decode.Decoder a
     -> (Result Http.Error a -> msg)
     -> Cmd msg
-authenticatedGet model url decoder msg =
-    authenticatedApiCall "GET" model url decoder msg
+get token url decoder msg =
+    authenticatedApiCall "GET" token url decoder msg
 
 authenticatedApiCall :
     String
@@ -43,6 +43,7 @@ authenticatedApiCall :
     -> Decode.Decoder a
     -> (Result Http.Error a -> msg)
     -> Cmd msg
+
 authenticatedApiCall method model url decoder msg =
     case model.loginToken of
         Just secret ->
