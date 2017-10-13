@@ -9,45 +9,48 @@ import Material.Textfield as Textfield
 import Material.Button as Button
 import Material.Options as Options
 import Material.Grid as Grid
+import Material.Options as Options
 import Material
 
 type alias Mdl =
-    Material.Model
+  Material.Model
+
 
 view: Model -> Html Msg.Msg
 view model =
-    div [] [
-      Grid.grid [] [
-      Textfield.render Msg.Mdl [1] model.mdl
-        [ Textfield.label "Enter username"
-        , Textfield.floatingLabel
-        , Textfield.text_
-      ]
-      [],
-      Textfield.render Msg.Mdl [2] model.mdl
-        [ Textfield.label "Enter password"
-        , Textfield.floatingLabel
-        , Textfield.password
-      ]
-      [],
-      Button.render Msg.Mdl [1] model.mdl
-        [ Button.raised
-        , Button.ripple
-        , Options.onClick (Msg.Login Msg.Submit)
-        ]
-        [ text "Login"]
-      ]
+  Grid.grid [] [
+    Grid.cell []
+    [ (userField model)
+    , (passwordField model)
+    , (loginButton model)
     ]
-    -- div [] [
-    --     input [ type_ "text", placeholder "username", onInput Msg.NameChange ] []
-    --     , input [ type_ "password", placeholder "password", onInput Msg.PasswordChange ] []
-    --     , button [ onClick Msg.Submit ] [ text "Login"]
-    --     ]
+    ]
 
--- passwordField: Model -> Html Msg.Msg
--- passwordField model =
---     Textfield.render Msg.Mdl [2] model.mdl
---       [ Textfield.label "Enter password"
---       , Textfield.floatingLabel
---       , Textfield.password
---     ]
+passwordField: Model -> Html Msg.Msg
+passwordField model =
+  Textfield.render Msg.Mdl [0] model.mdl
+  [ Textfield.label "Enter password"
+  , Textfield.floatingLabel
+  , Textfield.password
+  , Options.onInput (Msg.Login << Msg.PasswordChange)
+  ]
+  []
+
+userField: Model -> Html Msg.Msg
+userField model =
+  Textfield.render Msg.Mdl [1] model.mdl
+  [ Textfield.label "Enter username"
+  , Textfield.floatingLabel
+  , Textfield.text_
+  , Options.onInput (Msg.Login << Msg.NameChange)
+  ]
+  []
+
+loginButton: Model -> Html Msg.Msg
+loginButton model =
+  Button.render Msg.Mdl [1] model.mdl
+  [ Button.raised
+  , Button.ripple
+  , Options.onClick (Msg.Login Msg.Submit)
+  ]
+  [ text "Login"]
