@@ -1,4 +1,5 @@
 import View.Login
+import View.BookList
 import Html exposing (Html, button, div, text, input)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
@@ -21,13 +22,13 @@ update msg model =
   case msg of
     Login loginMsg ->
       let (data, cmd) =
-            (loginViewUpdate loginMsg model.login_view)
+            (loginViewUpdate loginMsg model.loginView)
       in
-          ({ model | login_view = data }, cmd)
+          ({ model | loginView = data }, cmd)
     LoggedIn token ->
       case token of
         Ok secret ->
-          ({ model | login_token = Just secret.secret }, Cmd.none)
+          ({ model | loginToken = Just secret.secret, currentView = BookListView }, Cmd.none)
         Err e ->
           (model, Cmd.none)
     Mdl m ->
@@ -45,7 +46,11 @@ loginViewUpdate msg model =
 
 view : Model -> Html Msg
 view model =
-  View.Login.view model
+  case model.currentView of
+    LoginView ->
+      View.Login.view model
+    BookListView ->
+      View.BookList.view model
 
 subscriptions: Model -> Sub Msg
 subscriptions model =

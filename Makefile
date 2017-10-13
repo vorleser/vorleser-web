@@ -1,5 +1,5 @@
 watch:
-	watchexec -k make run
+	watchexec -r -k make run
 
 run:
 	elm-make src/Main.elm --debug --output elm.js

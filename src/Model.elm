@@ -1,15 +1,15 @@
 module Model exposing (..)
 import Material
 
-type View = LoginView | LibraryView
+type View = LoginView | BookListView
 
 type alias Mdl =
     Material.Model
 
 type alias Model = {
-    login_view: LoginViewModel,
-    login_token: Maybe String,
-    current_view: View,
+    loginView: LoginViewModel,
+    loginToken: Maybe String,
+    currentView: View,
     mdl: Material.Model
 }
 

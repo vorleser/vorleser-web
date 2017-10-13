@@ -44,7 +44,7 @@ authenticatedApiCall :
     -> (Result Http.Error a -> msg)
     -> Cmd msg
 authenticatedApiCall method model url decoder msg =
-    case model.login_token of
+    case model.loginToken of
         Just secret ->
             let
                 request =
