@@ -39,19 +39,23 @@ update msg model =
     LoggedIn token ->
       case token of
         Ok secret ->
-          ({ model | loginToken = Just secret.secret, currentView = BookListView }, Api.get_everything model)
+          ({ model | loginToken = Just secret.secret, currentView = BookListView }, Api.getBooks { model | loginToken = Just secret.secret })
         Err e ->
           (errorSnackbar model "" "Error logging in, check your network connection.")
     Mdl m ->
       Material.update Mdl m model
     RequestBooks ->
-      (model, Api.get_everything model)
+      (model, Api.getBooks model)
     Books input_result ->
       case input_result of
         Ok input_data ->
           ({ model | data = input_data }, Cmd.none)
-        Err _ ->
-          (errorSnackbar model "" "Error fetching books, check your network connection.")
+        Err err ->
+          case err of
+            Http.BadPayload pl lol ->
+              (model, Debug.log pl Cmd.none)
+            _ ->
+              (errorSnackbar model "" "Error fetching books, check your network connection.")
     Snackbar msg_ ->
       Snackbar.update msg_ model.snackbar
           |> map1st (\s -> { model | snackbar = s })
