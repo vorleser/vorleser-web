@@ -12,7 +12,7 @@ type alias Model = {
     loginToken: Maybe String,
     currentView: View,
     mdl: Material.Model,
-    data: String,
+    books: List Audiobook,
     snackbar: Snackbar.Model String
 }
 

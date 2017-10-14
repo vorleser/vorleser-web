@@ -22,13 +22,13 @@ login user password =
       in
           Http.send Msg.LoggedIn request
 
-get_everything : Model.Model -> Cmd Msg.Msg
-get_everything model =
-  Auth.get
-  model
-  "/all_the_things"
-  Json.Decode.string
-  Msg.Books
+-- get_everything : Model.Model -> Cmd Msg.Msg
+-- get_everything model =
+--   Auth.get
+--   model
+--   "/all_the_things"
+--   Json.Decode.string
+--   Msg.Books
 
 getBooks : Model.Model -> Cmd Msg.Msg
 getBooks model =

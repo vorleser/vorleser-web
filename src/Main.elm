@@ -24,7 +24,7 @@ init =
   , loginToken = Nothing
   , currentView = LoginView
   , mdl = Material.model
-  , data = ""
+  , books = []
   , snackbar = Snackbar.model
   }, Cmd.none)
 
@@ -48,8 +48,8 @@ update msg model =
       (model, Api.getBooks model)
     Books input_result ->
       case input_result of
-        Ok input_data ->
-          ({ model | data = input_data }, Cmd.none)
+        Ok book_data ->
+          ({ model | books = book_data }, Cmd.none)
         Err err ->
           case err of
             Http.BadPayload pl lol ->
