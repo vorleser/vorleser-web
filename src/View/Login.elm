@@ -4,13 +4,14 @@ import Model exposing (Model, Mdl)
 import Msg
 import Html exposing (Html, button, div, text, input)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick, onInput)
+import Html.Events exposing (onClick, onInput, keyCode)
 import Material.Textfield as Textfield
 import Material.Button as Button
 import Material.Options as Options
 import Material.Grid as Grid
 import Material.Options as Options
 import Material.Snackbar as Snackbar
+import Json.Decode
 import Material
 
 type alias Mdl =
@@ -34,6 +35,7 @@ passwordField model =
   , Textfield.floatingLabel
   , Textfield.password
   , Options.onInput (Msg.Login << Msg.PasswordChange)
+  , Options.on "keydown" (Json.Decode.andThen isEnter keyCode)
   ]
   []
 
@@ -43,15 +45,25 @@ userField model =
   [ Textfield.label "Enter username"
   , Textfield.floatingLabel
   , Textfield.text_
+  , Textfield.autofocus
   , Options.onInput (Msg.Login << Msg.NameChange)
   ]
   []
 
 loginButton: Model -> Html Msg.Msg
 loginButton model =
-  Button.render Msg.Mdl [1] model.mdl
+  Button.render Msg.Mdl [2] model.mdl
   [ Button.raised
   , Button.ripple
+  , Button.type_ "submit"
+  , Options.on "keydown" (Json.Decode.andThen isEnter keyCode)
   , Options.onClick (Msg.Login Msg.Submit)
   ]
   [ text "Login"]
+
+isEnter : number -> Json.Decode.Decoder Msg.Msg
+isEnter code =
+  if code == 13 then
+    Json.Decode.succeed (Msg.Login Msg.Submit)
+  else
+    Json.Decode.fail ""

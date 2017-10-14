@@ -21,6 +21,35 @@ view model =
   Lists.ul []
     (
     List.map
-    (\book ->  Lists.li [] [ Lists.content [] [text book.title] ])
+    (\book -> (listItem model book))
     model.books
     )
+
+
+listItem: Model -> Model.Audiobook -> Html Msg.Msg
+listItem model book =
+  let subtitle =
+    case book.artist of
+      Just author ->
+        author ++ " — (" ++ formatTime book.length ++ ")"
+      _ ->
+        "(" ++ formatTime book.length ++ ")"
+  in
+    -- let playButton id =
+    --   Button.render Mdl [k] model.mdl
+    --   [ Button.icon
+    --   , Buttonm.accent |> when (Set.member k model.toggles)
+    --     ]
+    -- in
+      Lists.li [ Lists.withSubtitle ] [ Lists.content []
+      [ text book.title
+      , Lists.subtitle [] [ text subtitle ]
+      ] ]
+
+
+formatTime: Float -> String
+formatTime seconds =
+  let (hours, minutes) =
+    ((round seconds) // 3600, ((round seconds) % 3600) // 60)
+  in
+    (String.padLeft 2 '0' (toString hours)) ++ ":" ++ (String.padLeft 2 '0' (toString minutes))
