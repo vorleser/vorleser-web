@@ -12,12 +12,21 @@ import Model exposing (..)
 import Material
 import Api
 import Task
+import Material.Snackbar as Snackbar
+import Material.Helpers exposing (map1st, map2nd)
+
 main =
   Html.program { init = init, view = view, update = update, subscriptions = subscriptions }
 
 init : (Model, Cmd Msg)
 init =
-  (Model (LoginViewModel  "" "") Nothing LoginView Material.model "", Cmd.none)
+  ({ loginView = LoginViewModel "" ""
+  , loginToken = Nothing
+  , currentView = LoginView
+  , mdl = Material.model
+  , data = ""
+  , snackbar = Snackbar.model
+  }, Cmd.none)
 
 update: Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -32,7 +41,7 @@ update msg model =
         Ok secret ->
           ({ model | loginToken = Just secret.secret, currentView = BookListView }, Api.get_everything model)
         Err e ->
-          (model, Cmd.none)
+          (errorSnackbar model "" "Error logging in, check your network connection.")
     Mdl m ->
       Material.update Mdl m model
     RequestBooks ->
@@ -42,7 +51,21 @@ update msg model =
         Ok input_data ->
           ({ model | data = input_data }, Cmd.none)
         Err _ ->
-          (model, Cmd.none)
+          (errorSnackbar model "" "Error fetching books, check your network connection.")
+    Snackbar msg_ ->
+      Snackbar.update msg_ model.snackbar
+          |> map1st (\s -> { model | snackbar = s })
+          |> map2nd (Cmd.map Snackbar)
+    -- Snackbar _ ->
+    --   (model, Cmd.none)
+
+errorSnackbar : Model -> String -> String -> (Model, Cmd Msg)
+errorSnackbar model text name =
+  (Tuple.mapSecond (Cmd.map Snackbar)
+  (Tuple.mapFirst (\first -> { model | snackbar = first })
+    (Snackbar.add (Snackbar.toast text name) model.snackbar)
+  ))
+
 
 loginViewUpdate : LoginViewMsg -> LoginViewModel -> (LoginViewModel, Cmd Msg)
 loginViewUpdate msg model =

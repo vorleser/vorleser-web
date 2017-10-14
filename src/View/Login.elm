@@ -10,6 +10,7 @@ import Material.Button as Button
 import Material.Options as Options
 import Material.Grid as Grid
 import Material.Options as Options
+import Material.Snackbar as Snackbar
 import Material
 
 type alias Mdl =
@@ -22,6 +23,7 @@ view model =
     [ (userField model)
     , (passwordField model)
     , (loginButton model)
+    , Snackbar.view model.snackbar |> Html.map Msg.Snackbar
     ]
     ]
 
