@@ -1,7 +1,7 @@
 module View.BookList exposing (..)
 
 import Model exposing (Model, Mdl)
-import Material.List as Asdf
+import Material.List as Lists
 import Msg
 import Html exposing (Html, button, div, text, input)
 import Html.Attributes exposing (..)
@@ -18,7 +18,9 @@ type alias Mdl =
 
 view: Model -> Html Msg.Msg
 view model =
-  Asdf.ul []
-    [ Asdf.li [] [ Asdf.content [] [text "Lord of the Rings"] ]
-    , Asdf.li [] [ Asdf.content [] [text "Harry Potter"] ]
-    ]
+  Lists.ul []
+    (
+    List.map
+    (\book ->  Lists.li [] [ Lists.content [] [text book.title] ])
+    model.books
+    )
