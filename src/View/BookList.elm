@@ -11,6 +11,7 @@ import Material.Button as Button
 import Material.Options as Options
 import Material.Grid as Grid
 import Material.Options as Options
+import Material.Icon as Icon
 import Material
 
 type alias Mdl =
@@ -20,14 +21,15 @@ view: Model -> Html Msg.Msg
 view model =
   Lists.ul []
     (
-    List.map
-    (\book -> (listItem model book))
+    List.map2
+    (\book -> \k -> (listItem model book k))
     model.books
+    (List.range 0 (List.length model.books))
     )
 
 
-listItem: Model -> Model.Audiobook -> Html Msg.Msg
-listItem model book =
+listItem: Model -> Model.Audiobook -> Int -> Html Msg.Msg
+listItem model book index =
   let subtitle =
     case book.artist of
       Just author ->
@@ -35,14 +37,14 @@ listItem model book =
       _ ->
         "(" ++ formatTime book.length ++ ")"
   in
-    -- let playButton id =
-    --   Button.render Mdl [k] model.mdl
-    --   [ Button.icon
-    --   , Buttonm.accent |> when (Set.member k model.toggles)
-    --     ]
-    -- in
+    let playButton =
+      (\id -> \index -> Button.render Msg.Mdl [index] model.mdl [Button.icon] [ Icon.i "play_circle_outline" ])
+      -- , Button.accent |> when (Set.member k model.toggles)
+      -- ]
+    in
       Lists.li [ Lists.withSubtitle ] [ Lists.content []
       [ text book.title
+      , playButton model index
       , Lists.subtitle [] [ text subtitle ]
       ] ]
 

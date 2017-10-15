@@ -38,8 +38,6 @@ getBooks model =
   (Json.Decode.list audiobookDecoder)
   Msg.Books
 
--- {(Auth.authenticatedGet "/all_the_things")}
-
 audiobookDecoder: Decode.Decoder Audiobook
 audiobookDecoder =
     decode Audiobook
