@@ -6,6 +6,7 @@ import Html exposing (Html, div)
 import Model exposing (Model)
 import Material.Grid as Grid
 import Material.Button as Button
+import Material.Options as Options
 
 view: Model -> Html Msg.Msg
 view model =
@@ -28,4 +29,6 @@ view model =
 
 playPauseButton: Model -> Html Msg.Msg
 playPauseButton model =
-  Button.render Msg.Mdl [] model.mdl [] [Html.text "Play/Pause"]
+  Button.render Msg.Mdl [] model.mdl
+  [Options.onClick Msg.TogglePlayback]
+  [Html.text "Play/Pause"]

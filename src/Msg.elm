@@ -15,3 +15,4 @@ type Msg
   | Snackbar (Snackbar.Msg String)
   | PlayBook (String)
   | SetProgress (Float)
+  | TogglePlayback

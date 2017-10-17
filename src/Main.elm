@@ -70,14 +70,21 @@ update msg model =
       let modelPlayback =
         model.playback
       in
-        -- TODO: start playback here
-        ({ model | playback = { modelPlayback | currentBook = Just id }}, Cmd.none)
+        case model.loginToken of
+          Just secret ->
+            ({ model | playback = { modelPlayback | currentBook = Just id }}, Audio.command 
+              (Audio.toJs (Audio.Play (Config.baseUrlData ++ "/" ++ id ++ "?auth=" ++ secret )))
+            )
+          _ ->
+            -- todo: display error here should not be reachable
+            (model, Cmd.none)
     SetProgress new_progress ->
       let modelPlayback =
         model.playback
       in
-        -- TODO: start playback here
         ({ model | playback = { modelPlayback | progress = new_progress }}, Cmd.none)
+    TogglePlayback ->
+      (model, Audio.command (Audio.toJs Audio.Toggle))
 
 errorSnackbar : Model -> String -> String -> (Model, Cmd Msg)
 errorSnackbar model text name =
@@ -107,4 +114,4 @@ view model =
 
 subscriptions: Model -> Sub Msg
 subscriptions model =
-  Sub.none
+  Audio.progress SetProgress
