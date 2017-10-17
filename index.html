@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Elm • TodoMVC</title>
+  <title>Vorleser</title>
   <script type="text/javascript" src="elm.js"></script>
   <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500|Roboto+Mono|Roboto+Condensed:400,700&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -17,6 +17,10 @@
 <script type="text/javascript">
   var node = document.getElementById('main');
   var app = Elm.Main.embed(node);
+
+  app.ports.check.subscribe(function(command) {
+    console.log(command);
+  })
 </script>
 
 </html>

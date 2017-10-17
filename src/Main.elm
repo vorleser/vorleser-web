@@ -14,6 +14,7 @@ import Api
 import Task
 import Material.Snackbar as Snackbar
 import Material.Helpers exposing (map1st, map2nd)
+import Audio
 
 main =
   Html.program { init = init, view = view, update = update, subscriptions = subscriptions }
