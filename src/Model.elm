@@ -8,12 +8,19 @@ type alias Mdl =
     Material.Model
 
 type alias Model = {
-    loginView: LoginViewModel,
-    loginToken: Maybe String,
-    currentView: View,
-    mdl: Material.Model,
-    books: List Audiobook,
-    snackbar: Snackbar.Model String
+    loginView: LoginViewModel
+  , loginToken: Maybe String
+  , currentView: View
+  , mdl: Material.Model
+  , books: List Audiobook
+  , snackbar: Snackbar.Model String
+  , playback: Playback
+}
+
+type alias Playback = {
+    currentBook: Maybe String
+  , progress: Float
+  , playing: Bool
 }
 
 

@@ -19,14 +19,14 @@ type alias Mdl =
 
 view: Model -> Html Msg.Msg
 view model =
-  Grid.grid [] [
+  -- Grid.grid [] [
     Grid.cell []
     [ (userField model)
     , (passwordField model)
     , (loginButton model)
     , Snackbar.view model.snackbar |> Html.map Msg.Snackbar
     ]
-    ]
+  -- ]
 
 passwordField: Model -> Html Msg.Msg
 passwordField model =

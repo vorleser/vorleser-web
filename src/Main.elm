@@ -26,6 +26,11 @@ init =
   , mdl = Material.model
   , books = []
   , snackbar = Snackbar.model
+  , playback = {
+      currentBook = Nothing
+    , playing = False
+    , progress = 0
+  }
   }, Cmd.none)
 
 update: Msg -> Model -> (Model, Cmd Msg)
@@ -60,8 +65,18 @@ update msg model =
       Snackbar.update msg_ model.snackbar
           |> map1st (\s -> { model | snackbar = s })
           |> map2nd (Cmd.map Snackbar)
-    -- Snackbar _ ->
-    --   (model, Cmd.none)
+    PlayBook id ->
+      let modelPlayback =
+        model.playback
+      in
+        -- TODO: start playback here
+        ({ model | playback = { modelPlayback | currentBook = Just id }}, Cmd.none)
+    SetProgress new_progress ->
+      let modelPlayback =
+        model.playback
+      in
+        -- TODO: start playback here
+        ({ model | playback = { modelPlayback | progress = new_progress }}, Cmd.none)
 
 errorSnackbar : Model -> String -> String -> (Model, Cmd Msg)
 errorSnackbar model text name =

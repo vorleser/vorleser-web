@@ -13,3 +13,5 @@ type Msg
   | Mdl (Material.Msg Msg)
   | RequestBooks
   | Snackbar (Snackbar.Msg String)
+  | PlayBook (String)
+  | SetProgress (Float)

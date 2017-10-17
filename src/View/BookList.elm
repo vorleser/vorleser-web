@@ -13,19 +13,26 @@ import Material.Grid as Grid
 import Material.Options as Options
 import Material.Icon as Icon
 import Material
+import View.Playback
 
 type alias Mdl =
   Material.Model
 
 view: Model -> Html Msg.Msg
 view model =
-  Lists.ul []
-    (
-    List.map2
-    (\book -> \k -> (listItem model book k))
-    model.books
-    (List.range 0 (List.length model.books))
-    )
+  Grid.grid [] [
+    Grid.cell []
+    [ (Lists.ul []
+      (
+      List.map2
+      (\book -> \k -> (listItem model book k))
+      model.books
+      (List.range 0 (List.length model.books))
+      ))
+      , View.Playback.view model
+    ],
+    View.Playback.view model
+  ]
 
 
 listItem: Model -> Model.Audiobook -> Int -> Html Msg.Msg
@@ -37,17 +44,26 @@ listItem model book index =
       _ ->
         "(" ++ formatTime book.length ++ ")"
   in
-    let playButton =
-      (\id -> \index -> Button.render Msg.Mdl [index] model.mdl [Button.icon] [ Icon.i "play_circle_outline" ])
-      -- , Button.accent |> when (Set.member k model.toggles)
-      -- ]
-    in
-      Lists.li [ Lists.withSubtitle ] [ Lists.content []
-      [ text book.title
-      , playButton model index
-      , Lists.subtitle [] [ text subtitle ]
-      ] ]
+    -- let playButton =
+    --   (\id -> \index -> Button.render Msg.Mdl [index] model.mdl [Button.icon] [ Icon.i "play_circle_outline" ])
+    --   -- , Button.accent |> when (Set.member k model.toggles)
+    --   -- ]
+    Lists.li [ Lists.withSubtitle ] [ Lists.content []
+    [ text book.title
+    , playButton model index book.id
+    , Lists.subtitle [] [ text subtitle ]
+    ] ]
 
+playButton: Model -> Int -> String -> Html Msg.Msg
+playButton model index id =
+  Button.render
+  Msg.Mdl
+  [index]
+  model.mdl
+  [ Button.icon
+  , Options.onClick (Msg.PlayBook id)
+  ]
+  [ Icon.i "play_circle_outline" ]
 
 formatTime: Float -> String
 formatTime seconds =
