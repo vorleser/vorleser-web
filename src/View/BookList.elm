@@ -13,6 +13,7 @@ import Material.Grid as Grid
 import Material.Options as Options
 import Material.Icon as Icon
 import Material
+import Material.Snackbar as Snackbar
 import View.Playback
 
 type alias Mdl =
@@ -30,8 +31,9 @@ view model =
       (List.range 0 (List.length model.books))
       ))
       , View.Playback.view model
-    ],
-    View.Playback.view model
+      , Snackbar.view model.snackbar |> Html.map Msg.Snackbar
+    ]
+    -- View.Playback.view model
   ]
 
 

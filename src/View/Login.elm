@@ -3,13 +3,14 @@ module View.Login exposing (..)
 import Model exposing (Model, Mdl)
 import Msg
 import Html exposing (Html, button, div, text, input)
-import Html.Attributes exposing (..)
+import Html.Attributes exposing (style)
 import Html.Events exposing (onClick, onInput, keyCode)
 import Material.Textfield as Textfield
 import Material.Button as Button
 import Material.Options as Options
 import Material.Grid as Grid
 import Material.Options as Options
+import Material.Options as Options exposing (Style)
 import Material.Snackbar as Snackbar
 import Json.Decode
 import Material
@@ -19,14 +20,22 @@ type alias Mdl =
 
 view: Model -> Html Msg.Msg
 view model =
-  -- Grid.grid [] [
-    Grid.cell []
-    [ (userField model)
-    , (passwordField model)
-    , (loginButton model)
-    , Snackbar.view model.snackbar |> Html.map Msg.Snackbar
-    ]
-  -- ]
+  Grid.grid [] [
+    Grid.cell
+      []
+      [ (div
+        [ style
+          [ ("display", "box")
+          , ("box-pack", "center")
+          ]
+        ]
+        [ (userField model)
+          , (passwordField model)
+          , (loginButton model)
+          , (Snackbar.view model.snackbar |> Html.map Msg.Snackbar)
+        ])
+      ]
+  ]
 
 passwordField: Model -> Html Msg.Msg
 passwordField model =
