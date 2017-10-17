@@ -7,6 +7,7 @@ import Model exposing (Model)
 import Material.Grid as Grid
 import Material.Button as Button
 import Material.Options as Options
+import Material.Icon as Icon
 
 view: Model -> Html Msg.Msg
 view model =
@@ -29,6 +30,12 @@ view model =
 
 playPauseButton: Model -> Html Msg.Msg
 playPauseButton model =
+  let icon =
+    if model.playback.playing then
+      "pause"
+    else
+      "play_arrow"
+  in
   Button.render Msg.Mdl [] model.mdl
-  [Options.onClick Msg.TogglePlayback]
-  [Html.text "Play/Pause"]
+  [Button.icon, Options.onClick Msg.TogglePlayback]
+  [ Icon.i icon ]

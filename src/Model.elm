@@ -68,3 +68,7 @@ type alias Playstate = {
     position: Float,
     timestamp: String -- TODO: this should be a Date
 }
+
+-- getBookById : String -> Model -> Audiobook
+-- getBookById id model =
+--   List.find (\book -> book.id == id) model.books
