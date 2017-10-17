@@ -41,11 +41,16 @@
     } else if (command.command === "SkipTo") {
       audio.currentTime = Number(command.arg);
     }
+    sendPlaying();
   })
 
   function sendProgress() {
     console.log("sending progress: ")
     app.ports.progress.send(audio.currentTime)
+  }
+
+  function sendPlaying() {
+    app.ports.playing.send(!audio.paused)
   }
 </script>
 

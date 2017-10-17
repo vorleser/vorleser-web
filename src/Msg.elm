@@ -16,3 +16,4 @@ type Msg
   | PlayBook (String)
   | SetProgress (Float)
   | TogglePlayback
+  | SetPlaying (Bool)

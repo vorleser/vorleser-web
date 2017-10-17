@@ -78,6 +78,11 @@ update msg model =
           _ ->
             -- todo: display error here should not be reachable
             (model, Cmd.none)
+    SetPlaying state ->
+      let modelPlayback =
+        model.playback
+      in
+        ({ model | playback = { modelPlayback | playing = state }}, Cmd.none)
     SetProgress new_progress ->
       let modelPlayback =
         model.playback
@@ -114,4 +119,6 @@ view model =
 
 subscriptions: Model -> Sub Msg
 subscriptions model =
-  Audio.progress SetProgress
+  Sub.batch [ Audio.progress SetProgress
+  , Audio.playing SetPlaying
+  ]
