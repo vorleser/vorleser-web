@@ -1,6 +1,7 @@
 module Model exposing (..)
 import Material
 import Material.Snackbar as Snackbar
+import Dict exposing (Dict)
 
 type View = LoginView | BookListView
 
@@ -12,7 +13,7 @@ type alias Model = {
   , loginToken: Maybe String
   , currentView: View
   , mdl: Material.Model
-  , books: List Audiobook
+  , books: Dict String Audiobook
   , snackbar: Snackbar.Model String
   , playback: Playback
 }

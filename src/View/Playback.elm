@@ -8,6 +8,8 @@ import Material.Grid as Grid
 import Material.Button as Button
 import Material.Options as Options
 import Material.Icon as Icon
+import Html exposing (Html, button, div, text, input)
+import Dict
 
 view: Model -> Html Msg.Msg
 view model =
@@ -23,7 +25,8 @@ view model =
         ]
       [
         playPauseButton model,
-        Slider.view [ Slider.onChange Msg.SetProgress, Slider.value model.playback.progress ] 
+        Slider.view [ Slider.onChange Msg.SetProgress, Slider.value model.playback.progress ],
+        text (currentBookTitle model)
       ])
     ]
   ]
@@ -39,3 +42,14 @@ playPauseButton model =
   Button.render Msg.Mdl [] model.mdl
   [Button.icon, Options.onClick Msg.TogglePlayback]
   [ Icon.i icon ]
+
+
+currentBookTitle : Model -> String
+currentBookTitle model =
+  Maybe.withDefault
+  "No book playing"
+  (case model.playback.currentBook of
+    Just id ->
+      Maybe.map .title (Dict.get id model.books)
+    _ ->
+      Nothing)

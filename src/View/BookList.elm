@@ -15,6 +15,7 @@ import Material.Icon as Icon
 import Material
 import Material.Snackbar as Snackbar
 import View.Playback
+import Dict
 
 type alias Mdl =
   Material.Model
@@ -27,8 +28,8 @@ view model =
       (
       List.map2
       (\book -> \k -> (listItem model book k))
-      model.books
-      (List.range 0 (List.length model.books))
+      (Dict.values model.books)
+      (List.range 0 (Dict.size model.books))
       ))
       , View.Playback.view model
       , Snackbar.view model.snackbar |> Html.map Msg.Snackbar

@@ -15,6 +15,7 @@ import Task
 import Material.Snackbar as Snackbar
 import Material.Helpers exposing (map1st, map2nd)
 import Audio
+import Dict
 
 main =
   Html.program { init = init, view = view, update = update, subscriptions = subscriptions }
@@ -25,7 +26,7 @@ init =
   , loginToken = Nothing
   , currentView = LoginView
   , mdl = Material.model
-  , books = []
+  , books = Dict.empty
   , snackbar = Snackbar.model
   , playback = {
       currentBook = Nothing
@@ -55,7 +56,7 @@ update msg model =
     Books input_result ->
       case input_result of
         Ok book_data ->
-          ({ model | books = book_data }, Cmd.none)
+          ({ model | books = (bookDict book_data) }, Cmd.none)
         Err err ->
           case err of
             Http.BadPayload pl lol ->
@@ -122,3 +123,7 @@ subscriptions model =
   Sub.batch [ Audio.progress SetProgress
   , Audio.playing SetPlaying
   ]
+
+bookDict : List Audiobook -> Dict.Dict String Audiobook
+bookDict books =
+  Dict.fromList (List.map (\b -> (b.id, b)) books)
