@@ -47,8 +47,8 @@ update msg model =
       case token of
         Ok secret ->
           ({ model | loginToken = Just secret.secret, currentView = BookListView }, Api.getBooks { model | loginToken = Just secret.secret })
-        Err e ->
-          (errorSnackbar model "" "Error logging in, check your network connection.")
+        Err err ->
+          handleHttpError err "logging in" model
     Mdl m ->
       Material.update Mdl m model
     RequestBooks ->
@@ -58,11 +58,7 @@ update msg model =
         Ok book_data ->
           ({ model | books = (bookDict book_data) }, Cmd.none)
         Err err ->
-          case err of
-            Http.BadPayload pl lol ->
-              (model, Debug.log pl Cmd.none)
-            _ ->
-              (errorSnackbar model "" "Error fetching books, check your network connection.")
+          handleHttpError err "fetching books" model
     Snackbar msg_ ->
       Snackbar.update msg_ model.snackbar
           |> map1st (\s -> { model | snackbar = s })
@@ -73,7 +69,7 @@ update msg model =
       in
         case model.loginToken of
           Just secret ->
-            ({ model | playback = { modelPlayback | currentBook = Just id }}, Audio.command 
+            ({ model | playback = { modelPlayback | currentBook = Just id }}, Audio.command
               (Audio.toJs (Audio.Play (Config.baseUrlData ++ "/" ++ id ++ "?auth=" ++ secret )))
             )
           _ ->
@@ -88,7 +84,7 @@ update msg model =
       let modelPlayback =
         model.playback
       in
-        ({ model | playback = { modelPlayback | progress = new_progress }}, Cmd.none)
+        ({ model | playback = { modelPlayback | progress = new_progress }}, Audio.command (Audio.toJs (Audio.SkipTo new_progress)))
     TogglePlayback ->
       (model, Audio.command (Audio.toJs Audio.Toggle))
 
@@ -127,3 +123,17 @@ subscriptions model =
 bookDict : List Audiobook -> Dict.Dict String Audiobook
 bookDict books =
   Dict.fromList (List.map (\b -> (b.id, b)) books)
+
+handleHttpError :  Http.Error -> String -> Model -> (Model, Cmd Msg)
+handleHttpError error resource model =
+  case error of
+    Http.BadPayload _ _ ->
+      (errorSnackbar model "" ("Error " ++  resource ++ ", got an unexpected payload."))
+    Http.NetworkError ->
+      (errorSnackbar model "" ("Error " ++ resource ++ ", check your network connection."))
+    Http.BadStatus text ->
+      (errorSnackbar model "" ("Error " ++ resource ++ ". Bad status code"))
+    Http.Timeout ->
+      (errorSnackbar model "" ("Timeout " ++ resource))
+    Http.BadUrl _ ->
+      (errorSnackbar model "" "Bad url, how does this even happen?")
