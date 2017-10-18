@@ -25,7 +25,11 @@ view model =
         ]
       [
         playPauseButton model,
-        Slider.view [ Slider.onChange Msg.SetProgress, Slider.value model.playback.progress ],
+        Slider.view [
+          Slider.onChange Msg.SetProgress,
+          Slider.value model.playback.progress,
+          Slider.min 0,
+          Slider.max (Maybe.withDefault 0 (currentBookLength model))],
         text (currentBookTitle model)
       ])
     ]
@@ -51,5 +55,13 @@ currentBookTitle model =
   (case model.playback.currentBook of
     Just id ->
       Maybe.map .title (Dict.get id model.books)
+    _ ->
+      Nothing)
+
+currentBookLength : Model -> Maybe Float
+currentBookLength model =
+  (case model.playback.currentBook of
+    Just id ->
+      Maybe.map .length (Dict.get id model.books)
     _ ->
       Nothing)
