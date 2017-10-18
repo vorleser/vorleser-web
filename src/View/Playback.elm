@@ -26,7 +26,7 @@ view model =
       [
         playPauseButton model,
         Slider.view [
-          Slider.onChange Msg.SetProgress,
+          Slider.onChange (\x -> Msg.SetProgress (x / 1000)),
           Slider.value (model.playback.progress * 1000),
           Slider.min 0,
           Slider.max ((Maybe.withDefault 0 (currentBookLength model)) * 1000)],
