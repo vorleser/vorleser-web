@@ -92,6 +92,11 @@ update msg model =
       let modelPlayback =
         model.playback
       in
+        ({ model | playback = { modelPlayback | progress = new_progress }}, Cmd.none)
+    SetProgressManually new_progress ->
+      let modelPlayback =
+        model.playback
+      in
         ({ model | playback = { modelPlayback | progress = new_progress }}, Audio.command (Audio.toJs (Audio.SkipTo new_progress)))
     TogglePlayback ->
       (model, Audio.command (Audio.toJs Audio.Toggle))
