@@ -15,6 +15,7 @@ type alias Model = {
   , mdl: Material.Model
   , books: Dict String Audiobook
   , playstates: Dict String Playstate
+  , chapters: Dict String Chapter
   , snackbar: Snackbar.Model String
   , playback: Playback
 }
@@ -41,7 +42,7 @@ type alias LibraryView = {
 type alias AllThings = {
     -- libraries: List Library,
     books: List Audiobook,
-    -- chapters: List Chapter,
+    chapters: List Chapter,
     playstates: List Playstate
 }
 

@@ -7,8 +7,8 @@ import Msg
 import Model
 import Json.Encode as Encode
 import Json.Decode as Decode
-import Json.Decode.Pipeline exposing (decode, required)
-import Model exposing (Audiobook, Playstate, AllThings)
+import Json.Decode.Pipeline exposing (decode, required, optional)
+import Model exposing (Audiobook, Playstate, AllThings, Chapter)
 
 login : String -> String -> Cmd Msg.Msg
 login user password =
@@ -42,7 +42,17 @@ allDecoder: Decode.Decoder AllThings
 allDecoder =
     decode AllThings
         |> required "books" (Decode.list audiobookDecoder)
+        |> required "chapters" (Decode.list chapterDecoder)
         |> required "playstates" (Decode.list playstateDecoder)
+
+chapterDecoder: Decode.Decoder Chapter
+chapterDecoder =
+    decode Chapter
+        |> required "id" Decode.string
+        |> required "title" (Decode.maybe Decode.string)
+        |> required "number" Decode.int
+        |> required "start_time" Decode.float
+        |> required "audiobook_id" Decode.string
 
 playstateDecoder: Decode.Decoder Playstate
 playstateDecoder =

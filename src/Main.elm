@@ -29,6 +29,7 @@ init =
   , books = Dict.empty
   , snackbar = Snackbar.model
   , playstates = Dict.empty
+  , chapters = Dict.empty
   , playback = {
       currentBook = Nothing
     , playing = False
