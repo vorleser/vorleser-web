@@ -37,10 +37,10 @@ type alias LibraryView = {
     playstates: List Playstate
 }
 
-type alias AllThingsResponse = {
-    libraries: List Library,
+type alias AllThings = {
+    -- libraries: List Library,
     books: List Audiobook,
-    chapters: List Chapter,
+    -- chapters: List Chapter,
     playstates: List Playstate
 }
 

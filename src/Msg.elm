@@ -17,3 +17,4 @@ type Msg
   | SetProgress (Float)
   | TogglePlayback
   | SetPlaying (Bool)
+  | AllData (Result Http.Error AllThings)

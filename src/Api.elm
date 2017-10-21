@@ -8,7 +8,7 @@ import Model
 import Json.Encode as Encode
 import Json.Decode as Decode
 import Json.Decode.Pipeline exposing (decode, required)
-import Model exposing (Audiobook)
+import Model exposing (Audiobook, Playstate, AllThings)
 
 login : String -> String -> Cmd Msg.Msg
 login user password =
@@ -22,21 +22,34 @@ login user password =
       in
           Http.send Msg.LoggedIn request
 
--- get_everything : Model.Model -> Cmd Msg.Msg
--- get_everything model =
---   Auth.get
---   model
---   "/all_the_things"
---   Json.Decode.string
---   Msg.Books
+getEverything : Model.Model -> Cmd Msg.Msg
+getEverything model =
+  Auth.get
+  model
+  "/all_the_things"
+  allDecoder
+  Msg.AllData
 
 getBooks : Model.Model -> Cmd Msg.Msg
 getBooks model =
   Auth.get
   model
   "/audiobooks"
-  (Json.Decode.list audiobookDecoder)
+  (Decode.list audiobookDecoder)
   Msg.Books
+
+allDecoder: Decode.Decoder AllThings
+allDecoder =
+    decode AllThings
+        |> required "audiobooks" (Decode.list audiobookDecoder)
+        |> required "playstates" (Decode.list playstateDecoder)
+
+playstateDecoder: Decode.Decoder Playstate
+playstateDecoder =
+    decode Playstate
+        |> required "audiobook_id" Decode.string
+        |> required "position" Decode.float
+        |> required "timestamp" Decode.string
 
 audiobookDecoder: Decode.Decoder Audiobook
 audiobookDecoder =

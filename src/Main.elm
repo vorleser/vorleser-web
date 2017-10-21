@@ -53,6 +53,14 @@ update msg model =
       Material.update Mdl m model
     RequestBooks ->
       (model, Api.getBooks model)
+    RequestPlaystates ->
+      (model, Api.getPlaystates model)
+    AllThings input_result ->
+      case input_result of
+        Ok book_data ->
+          ({ model | books = (bookDict book_data) }, Cmd.none)
+        Err err ->
+          handleHttpError err "fetching books" model
     Books input_result ->
       case input_result of
         Ok book_data ->
