@@ -14,6 +14,7 @@ type Msg
   | RequestBooks
   | Snackbar (Snackbar.Msg String)
   | PlayBook (String)
+  | SetProgressManually (Float)
   | SetProgress (Float)
   | TogglePlayback
   | SetPlaying (Bool)
