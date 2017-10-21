@@ -41,7 +41,7 @@ getBooks model =
 allDecoder: Decode.Decoder AllThings
 allDecoder =
     decode AllThings
-        |> required "audiobooks" (Decode.list audiobookDecoder)
+        |> required "books" (Decode.list audiobookDecoder)
         |> required "playstates" (Decode.list playstateDecoder)
 
 playstateDecoder: Decode.Decoder Playstate

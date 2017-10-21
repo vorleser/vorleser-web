@@ -14,6 +14,7 @@ type alias Model = {
   , currentView: View
   , mdl: Material.Model
   , books: Dict String Audiobook
+  , playstates: Dict String Playstate
   , snackbar: Snackbar.Model String
   , playback: Playback
 }

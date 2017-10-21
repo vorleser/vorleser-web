@@ -28,6 +28,7 @@ init =
   , mdl = Material.model
   , books = Dict.empty
   , snackbar = Snackbar.model
+  , playstates = Dict.empty
   , playback = {
       currentBook = Nothing
     , playing = False
@@ -46,21 +47,19 @@ update msg model =
     LoggedIn token ->
       case token of
         Ok secret ->
-          ({ model | loginToken = Just secret.secret, currentView = BookListView }, Api.getBooks { model | loginToken = Just secret.secret })
+          ({ model | loginToken = Just secret.secret, currentView = BookListView }, Api.getEverything { model | loginToken = Just secret.secret })
         Err err ->
           handleHttpError err "logging in" model
     Mdl m ->
       Material.update Mdl m model
     RequestBooks ->
       (model, Api.getBooks model)
-    RequestPlaystates ->
-      (model, Api.getPlaystates model)
-    AllThings input_result ->
+    AllData input_result ->
       case input_result of
-        Ok book_data ->
-          ({ model | books = (bookDict book_data) }, Cmd.none)
+        Ok data ->
+          ({ model | books = (bookDict data.books), playstates = (playstateDict data.playstates) }, Cmd.none)
         Err err ->
-          handleHttpError err "fetching books" model
+          handleHttpError err "fetching data" model
     Books input_result ->
       case input_result of
         Ok book_data ->
@@ -128,6 +127,10 @@ subscriptions model =
   , Audio.playing SetPlaying
   ]
 
+playstateDict : List Playstate -> Dict.Dict String Playstate
+playstateDict states =
+  Dict.fromList (List.map (\s -> (s.audiobook_id, s)) states)
+
 bookDict : List Audiobook -> Dict.Dict String Audiobook
 bookDict books =
   Dict.fromList (List.map (\b -> (b.id, b)) books)
@@ -135,8 +138,9 @@ bookDict books =
 handleHttpError :  Http.Error -> String -> Model -> (Model, Cmd Msg)
 handleHttpError error resource model =
   case error of
-    Http.BadPayload _ _ ->
-      (errorSnackbar model "" ("Error " ++  resource ++ ", got an unexpected payload."))
+    Http.BadPayload info _ ->
+      Debug.log info (model, Cmd.none)
+      -- (errorSnackbar model "" ("Error " ++  resource ++ ", got an unexpected payload." ++ info))
     Http.NetworkError ->
       (errorSnackbar model "" ("Error " ++ resource ++ ", check your network connection."))
     Http.BadStatus text ->
