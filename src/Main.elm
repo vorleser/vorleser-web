@@ -90,13 +90,16 @@ update msg model =
               (Audio.toJs (Audio.Play (Config.baseUrlData ++ "/" ++ id ++ "?auth=" ++ secret )))
             )
           _ ->
-            -- todo: display error here should not be reachable
+            -- todo: display error here, should not be reachable
             (model, Cmd.none)
     SetPlaying state ->
       let modelPlayback =
         model.playback
       in
-        ({ model | playback = { modelPlayback | playing = state }}, Cmd.none)
+        let newModel =
+          { model | playback = { modelPlayback | playing = state }}
+        in
+          (newModel, Api.updatePlaystates model )
     SetProgress new_progress ->
       let modelPlayback =
         model.playback
@@ -109,6 +112,8 @@ update msg model =
         ({ model | playback = { modelPlayback | progress = new_progress }}, Audio.command (Audio.toJs (Audio.SkipTo new_progress)))
     TogglePlayback ->
       (model, Audio.command (Audio.toJs Audio.Toggle))
+    UpdatedPlaystates content ->
+      Debug.log (toString content) (model, Cmd.none)
 
 errorSnackbar : Model -> String -> String -> (Model, Cmd Msg)
 errorSnackbar model text name =

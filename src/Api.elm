@@ -5,6 +5,7 @@ import Http
 import Config
 import Msg
 import Model
+import Dict
 import Json.Encode as Encode
 import Json.Decode as Decode
 import Json.Decode.Pipeline exposing (decode, required, optional)
@@ -69,3 +70,26 @@ audiobookDecoder =
         |> required "artist" (Decode.maybe Decode.string)
         |> required "length" Decode.float
         |> required "library_id" Decode.string
+
+playstateEncode: Playstate -> Encode.Value
+playstateEncode state =
+  Encode.object
+  [ ("audiobook_id", Encode.string state.audiobook_id)
+  , ("position", Encode.float state.position)
+  , ("timestamp", Encode.string state.timestamp)
+  ]
+
+updatePlaystates: Model.Model -> Cmd Msg.Msg
+updatePlaystates model =
+  Auth.post
+  model
+  "/update_playstates"
+  Decode.string
+  (
+    Encode.list
+    (List.map
+      (\s -> (playstateEncode (Tuple.second s)))
+      (Dict.toList model.playstates)
+    )
+  )
+  Msg.UpdatedPlaystates

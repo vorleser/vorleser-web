@@ -19,3 +19,4 @@ type Msg
   | TogglePlayback
   | SetPlaying (Bool)
   | AllData (Result Http.Error AllThings)
+  | UpdatedPlaystates (Result Http.Error String)
