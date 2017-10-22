@@ -48,7 +48,10 @@ update msg model =
     LoggedIn token ->
       case token of
         Ok secret ->
-          ({ model | loginToken = Just secret.secret, currentView = BookListView }, Api.getEverything { model | loginToken = Just secret.secret })
+          (
+            { model | loginToken = Just secret.secret, currentView = BookListView }
+            , Api.getEverything { model | loginToken = Just secret.secret }
+          )
         Err err ->
           handleHttpError err "logging in" model
     Mdl m ->
@@ -58,7 +61,13 @@ update msg model =
     AllData input_result ->
       case input_result of
         Ok data ->
-          ({ model | books = (bookDict data.books), playstates = (playstateDict data.playstates) }, Cmd.none)
+          (
+            { model |
+              books = (bookDict data.books)
+            , playstates = (playstateDict data.playstates)
+            , chapters = (chapterDict data.chapters)
+            }, Cmd.none
+          )
         Err err ->
           handleHttpError err "fetching data" model
     Books input_result ->
@@ -133,6 +142,10 @@ subscriptions model =
   , Audio.playing SetPlaying
   ]
 
+chapterDict : List Chapter -> Dict.Dict String Chapter
+chapterDict chapters =
+  Dict.fromList (List.map (\c -> (c.audiobook_id, c)) chapters)
+
 playstateDict : List Playstate -> Dict.Dict String Playstate
 playstateDict states =
   Dict.fromList (List.map (\s -> (s.audiobook_id, s)) states)
@@ -145,8 +158,7 @@ handleHttpError :  Http.Error -> String -> Model -> (Model, Cmd Msg)
 handleHttpError error resource model =
   case error of
     Http.BadPayload info _ ->
-      Debug.log info (model, Cmd.none)
-      -- (errorSnackbar model "" ("Error " ++  resource ++ ", got an unexpected payload." ++ info))
+      Debug.log info (errorSnackbar model "" ("Error " ++  resource ++ ", got an unexpected payload." ++ info))
     Http.NetworkError ->
       (errorSnackbar model "" ("Error " ++ resource ++ ", check your network connection."))
     Http.BadStatus text ->
