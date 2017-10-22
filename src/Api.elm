@@ -8,7 +8,10 @@ import Model
 import Dict
 import Json.Encode as Encode
 import Json.Decode as Decode
+import Json.Encode.Extra as EncodeExtra
+import Json.Decode.Extra as DecodeExtra
 import Json.Decode.Pipeline exposing (decode, required, optional)
+import Date.Extra as DateExtra
 import Model exposing (Audiobook, Playstate, AllThings, Chapter)
 
 login : String -> String -> Cmd Msg.Msg
@@ -60,7 +63,7 @@ playstateDecoder =
     decode Playstate
         |> required "audiobook_id" Decode.string
         |> required "position" Decode.float
-        |> required "timestamp" Decode.string
+        |> required "timestamp" DecodeExtra.date
 
 audiobookDecoder: Decode.Decoder Audiobook
 audiobookDecoder =
@@ -76,7 +79,7 @@ playstateEncode state =
   Encode.object
   [ ("audiobook_id", Encode.string state.audiobook_id)
   , ("position", Encode.float state.position)
-  , ("timestamp", Encode.string state.timestamp)
+  , ("timestamp", Encode.string (DateExtra.toIsoString state.timestamp))
   ]
 
 updatePlaystates: Model.Model -> Cmd Msg.Msg

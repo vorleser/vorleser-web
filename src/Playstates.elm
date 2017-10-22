@@ -12,8 +12,7 @@ updateLocalPlaystate model date =
         new_playstate =
           { audiobook_id = id
           , position = model.playback.progress
-          -- , timestamp = Date.toString datez
-          , timestamp = "2011-10-05T14:48:00.000Z"
+          , timestamp = date
           }
       in
         { model | playstates = Dict.insert id new_playstate model.playstates}

@@ -2,6 +2,7 @@ module Model exposing (..)
 import Material
 import Material.Snackbar as Snackbar
 import Dict exposing (Dict)
+import Date
 
 type View = LoginView | BookListView
 
@@ -69,7 +70,7 @@ type alias Chapter = {
 type alias Playstate = {
     audiobook_id: String,
     position: Float,
-    timestamp: String -- TODO: this should be a Date
+    timestamp: Date.Date -- TODO: this should be a Date
 }
 
 -- getBookById : String -> Model -> Audiobook
