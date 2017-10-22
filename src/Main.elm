@@ -16,6 +16,8 @@ import Material.Snackbar as Snackbar
 import Material.Helpers exposing (map1st, map2nd)
 import Audio
 import Dict
+import Playstates
+import Date exposing (..)
 
 main =
   Html.program { init = init, view = view, update = update, subscriptions = subscriptions }
@@ -104,7 +106,7 @@ update msg model =
       let modelPlayback =
         model.playback
       in
-        ({ model | playback = { modelPlayback | progress = new_progress }}, Cmd.none)
+        ({ model | playback = { modelPlayback | progress = new_progress }}, Task.perform UpdateLocalPlaystate Date.now)
     SetProgressManually new_progress ->
       let modelPlayback =
         model.playback
@@ -114,6 +116,8 @@ update msg model =
       (model, Audio.command (Audio.toJs Audio.Toggle))
     UpdatedPlaystates content ->
       Debug.log (toString content) (model, Cmd.none)
+    UpdateLocalPlaystate date ->
+      ((Playstates.updateLocalPlaystate model date), Cmd.none)
 
 errorSnackbar : Model -> String -> String -> (Model, Cmd Msg)
 errorSnackbar model text name =
@@ -143,7 +147,8 @@ view model =
 
 subscriptions: Model -> Sub Msg
 subscriptions model =
-  Sub.batch [ Audio.progress SetProgress
+  Sub.batch
+  [ Audio.progress SetProgress
   , Audio.playing SetPlaying
   ]
 

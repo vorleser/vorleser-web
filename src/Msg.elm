@@ -4,6 +4,7 @@ import Auth
 import Material
 import Material.Snackbar as Snackbar
 import Model exposing (..)
+import Date
 
 type LoginViewMsg = Submit | PasswordChange String | NameChange String
 type Msg
@@ -20,3 +21,4 @@ type Msg
   | SetPlaying (Bool)
   | AllData (Result Http.Error AllThings)
   | UpdatedPlaystates (Result Http.Error String)
+  | UpdateLocalPlaystate (Date.Date)
