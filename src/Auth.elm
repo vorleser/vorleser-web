@@ -63,10 +63,12 @@ authenticatedApiCall method model url decoder body msg =
                     Http.request
                         {
                           method = method,
-                          headers = [ Http.header "Authorization" secret ],
+                          headers =
+                            [ Http.header "Authorization" secret
+                            ],
                           url = Config.baseUrl ++ url,
                           expect = Http.expectJson decoder,
-                          body = Http.emptyBody,
+                          body = body,
                           timeout = Nothing,
                           withCredentials = False
                         }
