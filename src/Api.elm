@@ -32,7 +32,7 @@ getEverything model =
   model
   "/all_the_things"
   allDecoder
-  Msg.AllData
+  Msg.ReceiveAllData
 
 getBooks : Model.Model -> Cmd Msg.Msg
 getBooks model =
@@ -40,7 +40,7 @@ getBooks model =
   model
   "/audiobooks"
   (Decode.list audiobookDecoder)
-  Msg.Books
+  Msg.ReceiveBooks
 
 allDecoder: Decode.Decoder AllThings
 allDecoder =

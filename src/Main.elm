@@ -42,6 +42,12 @@ init =
 update: Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
+    Mdl m ->
+      Material.update Mdl m model
+    Snackbar msg_ ->
+      Snackbar.update msg_ model.snackbar
+          |> map1st (\s -> { model | snackbar = s })
+          |> map2nd (Cmd.map Snackbar)
     Login loginMsg ->
       let (data, cmd) =
             (loginViewUpdate loginMsg model.loginView)
@@ -56,11 +62,11 @@ update msg model =
           )
         Err err ->
           handleHttpError err "logging in" model
-    Mdl m ->
-      Material.update Mdl m model
+    RequestEverything ->
+      (model, Api.getEverything model)
     RequestBooks ->
       (model, Api.getBooks model)
-    AllData input_result ->
+    ReceiveAllData input_result ->
       case input_result of
         Ok data ->
           (
@@ -72,16 +78,27 @@ update msg model =
           )
         Err err ->
           handleHttpError err "fetching data" model
-    Books input_result ->
+    ReceiveBooks input_result ->
       case input_result of
         Ok book_data ->
           ({ model | books = (bookDict book_data) }, Cmd.none)
         Err err ->
           handleHttpError err "fetching books" model
-    Snackbar msg_ ->
-      Snackbar.update msg_ model.snackbar
-          |> map1st (\s -> { model | snackbar = s })
-          |> map2nd (Cmd.map Snackbar)
+    UpdatedPlaystates content ->
+      Debug.log (toString content) (model, Cmd.none)
+    Playback subMsg ->
+      playbackUpdate subMsg model
+
+errorSnackbar : Model -> String -> String -> (Model, Cmd Msg)
+errorSnackbar model text name =
+  (Tuple.mapSecond (Cmd.map Snackbar)
+  (Tuple.mapFirst (\first -> { model | snackbar = first })
+    (Snackbar.add (Snackbar.toast text name) model.snackbar)
+  ))
+
+playbackUpdate : PlaybackMsg -> Model -> (Model, Cmd Msg)
+playbackUpdate msg model =
+  case msg of
     PlayBook id ->
       let modelPlayback =
         model.playback
@@ -106,26 +123,20 @@ update msg model =
       let modelPlayback =
         model.playback
       in
-        ({ model | playback = { modelPlayback | progress = new_progress }}, Task.perform UpdateLocalPlaystate Date.now)
+        ( { model | playback = { modelPlayback | progress = new_progress } }
+        , Task.perform (\date -> Msg.Playback (UpdateLocalPlaystate date)) Date.now
+        )
     SetProgressManually new_progress ->
       let modelPlayback =
         model.playback
       in
-        ({ model | playback = { modelPlayback | progress = new_progress }}, Audio.command (Audio.toJs (Audio.SkipTo new_progress)))
-    TogglePlayback ->
-      (model, Audio.command (Audio.toJs Audio.Toggle))
-    UpdatedPlaystates content ->
-      Debug.log (toString content) (model, Cmd.none)
+        ({ model | playback = { modelPlayback | progress = new_progress }}
+        , Audio.command (Audio.toJs (Audio.SkipTo new_progress))
+        )
     UpdateLocalPlaystate date ->
       ((Playstates.updateLocalPlaystate model date), Cmd.none)
-
-errorSnackbar : Model -> String -> String -> (Model, Cmd Msg)
-errorSnackbar model text name =
-  (Tuple.mapSecond (Cmd.map Snackbar)
-  (Tuple.mapFirst (\first -> { model | snackbar = first })
-    (Snackbar.add (Snackbar.toast text name) model.snackbar)
-  ))
-
+    TogglePlayback ->
+      (model, Audio.command (Audio.toJs Audio.Toggle))
 
 loginViewUpdate : LoginViewMsg -> LoginViewModel -> (LoginViewModel, Cmd Msg)
 loginViewUpdate msg model =
@@ -148,8 +159,8 @@ view model =
 subscriptions: Model -> Sub Msg
 subscriptions model =
   Sub.batch
-  [ Audio.progress SetProgress
-  , Audio.playing SetPlaying
+  [ Audio.progress (\p -> (Msg.Playback (SetProgress p)))
+  , Audio.playing (\play -> (Msg.Playback (SetPlaying play)))
   ]
 
 chapterDict : List Chapter -> Dict.Dict String Chapter
@@ -168,7 +179,8 @@ handleHttpError :  Http.Error -> String -> Model -> (Model, Cmd Msg)
 handleHttpError error resource model =
   case error of
     Http.BadPayload info _ ->
-      Debug.log info (errorSnackbar model "" ("Error " ++  resource ++ ", got an unexpected payload." ++ info))
+      Debug.log info
+        (errorSnackbar model "" ("Error " ++  resource ++ ", got an unexpected payload."))
     Http.NetworkError ->
       (errorSnackbar model "" ("Error " ++ resource ++ ", check your network connection."))
     Http.BadStatus text ->

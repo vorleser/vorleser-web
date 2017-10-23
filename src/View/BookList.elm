@@ -64,7 +64,7 @@ playButton model index id =
   [index]
   model.mdl
   [ Button.icon
-  , Options.onClick (Msg.PlayBook id)
+  , Options.onClick (Msg.Playback (Msg.PlayBook id))
   ]
   [ Icon.i "play_circle_outline" ]
 

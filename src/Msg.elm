@@ -7,18 +7,22 @@ import Model exposing (..)
 import Date
 
 type LoginViewMsg = Submit | PasswordChange String | NameChange String
-type Msg
-  = Login (LoginViewMsg)
-  | LoggedIn (Result Http.Error Auth.SessionSecret)
-  | Books (Result Http.Error (List Audiobook))
-  | Mdl (Material.Msg Msg)
-  | RequestBooks
-  | Snackbar (Snackbar.Msg String)
+type PlaybackMsg
+  = TogglePlayback
+  | UpdateLocalPlaystate (Date.Date)
+  | SetProgress (Float)
+  | SetPlaying (Bool)
   | PlayBook (String)
   | SetProgressManually (Float)
-  | SetProgress (Float)
-  | TogglePlayback
-  | SetPlaying (Bool)
-  | AllData (Result Http.Error AllThings)
+
+type Msg
+  = Mdl (Material.Msg Msg)
+  | Login (LoginViewMsg)
+  | LoggedIn (Result Http.Error Auth.SessionSecret)
+  | RequestBooks
+  | RequestEverything
+  | ReceiveAllData (Result Http.Error AllThings)
+  | ReceiveBooks (Result Http.Error (List Audiobook))
+  | Snackbar (Snackbar.Msg String)
   | UpdatedPlaystates (Result Http.Error String)
-  | UpdateLocalPlaystate (Date.Date)
+  | Playback (PlaybackMsg)
