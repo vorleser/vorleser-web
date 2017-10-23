@@ -17,6 +17,7 @@ import Material.Helpers exposing (map1st, map2nd)
 import Audio
 import Dict
 import Playstates
+import Error
 import Date exposing (..)
 
 main =
@@ -61,7 +62,7 @@ update msg model =
             , Api.getEverything { model | loginToken = Just secret.secret }
           )
         Err err ->
-          handleHttpError err "logging in" model
+          Error.handleHttpError err "logging in" model
     RequestEverything ->
       (model, Api.getEverything model)
     RequestBooks ->
@@ -77,24 +78,17 @@ update msg model =
             }, Cmd.none
           )
         Err err ->
-          handleHttpError err "fetching data" model
+          Error.handleHttpError err "fetching data" model
     ReceiveBooks input_result ->
       case input_result of
         Ok book_data ->
           ({ model | books = (bookDict book_data) }, Cmd.none)
         Err err ->
-          handleHttpError err "fetching books" model
+          Error.handleHttpError err "fetching books" model
     UpdatedPlaystates content ->
       Debug.log (toString content) (model, Cmd.none)
     Playback subMsg ->
       playbackUpdate subMsg model
-
-errorSnackbar : Model -> String -> String -> (Model, Cmd Msg)
-errorSnackbar model text name =
-  (Tuple.mapSecond (Cmd.map Snackbar)
-  (Tuple.mapFirst (\first -> { model | snackbar = first })
-    (Snackbar.add (Snackbar.toast text name) model.snackbar)
-  ))
 
 playbackUpdate : PlaybackMsg -> Model -> (Model, Cmd Msg)
 playbackUpdate msg model =
@@ -174,18 +168,3 @@ playstateDict states =
 bookDict : List Audiobook -> Dict.Dict String Audiobook
 bookDict books =
   Dict.fromList (List.map (\b -> (b.id, b)) books)
-
-handleHttpError :  Http.Error -> String -> Model -> (Model, Cmd Msg)
-handleHttpError error resource model =
-  case error of
-    Http.BadPayload info _ ->
-      Debug.log info
-        (errorSnackbar model "" ("Error " ++  resource ++ ", got an unexpected payload."))
-    Http.NetworkError ->
-      (errorSnackbar model "" ("Error " ++ resource ++ ", check your network connection."))
-    Http.BadStatus text ->
-      (errorSnackbar model "" ("Error " ++ resource ++ ". Bad status code"))
-    Http.Timeout ->
-      (errorSnackbar model "" ("Timeout " ++ resource))
-    Http.BadUrl _ ->
-      (errorSnackbar model "" "Bad url, how does this even happen?")
