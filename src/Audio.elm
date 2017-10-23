@@ -6,7 +6,7 @@ type alias Playback = {
   , progress: Float
 }
 
-type Command = Play (String) | Pause | Unpause | SkipTo (Float) | Toggle
+type Command = SetFile (String) | Play | Pause | Unpause | SkipTo (Float) | Toggle
 type alias JsCommand =
   { command : String
   , arg : Maybe String
@@ -15,8 +15,10 @@ type alias JsCommand =
 toJs : Command -> JsCommand
 toJs command =
   case command of
-    Play name ->
-      { command = "Play", arg = Just name }
+    SetFile name ->
+      { command = "SetFile", arg = Just name }
+    Play ->
+      { command = "Play", arg = Nothing }
     Pause ->
       { command = "Pause", arg = Nothing }
     Unpause ->
@@ -30,3 +32,4 @@ toJs command =
 port command  : JsCommand -> Cmd msg
 port progress : (Float -> msg) -> Sub msg
 port playing : (Bool -> msg) -> Sub msg
+port ready : (String -> msg) -> Sub msg

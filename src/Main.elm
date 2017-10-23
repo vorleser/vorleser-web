@@ -28,7 +28,8 @@ main =
 
 init : (Model, Cmd Msg)
 init =
-  ({ loginView = LoginViewModel "" ""
+  (
+  { loginView = LoginViewModel "" ""
   , loginToken = Nothing
   , currentView = LoginView
   , mdl = Material.model
@@ -36,11 +37,11 @@ init =
   , snackbar = Snackbar.model
   , playstates = Dict.empty
   , chapters = Dict.empty
-  , playback = {
-      currentBook = Nothing
+  , playback = 
+    { currentBook = Nothing
     , playing = False
     , progress = 0
-  }
+    }
   }, Cmd.none)
 
 update: Msg -> Model -> (Model, Cmd Msg)
@@ -102,12 +103,15 @@ playbackUpdate msg model =
       in
         case model.loginToken of
           Just secret ->
-            ({ model | playback = { modelPlayback | currentBook = Just id }}, Audio.command
-              (Audio.toJs (Audio.Play (Config.baseUrlData ++ "/" ++ id ++ "?auth=" ++ secret )))
+            ({ model | playback = { modelPlayback | currentBook = Just id }}, 
+              Audio.command
+                (Audio.toJs (Audio.SetFile (Config.baseUrlData ++ "/" ++ id ++ "?auth=" ++ secret )))
             )
           _ ->
             -- todo: display error here, should not be reachable
             (model, Cmd.none)
+    StartPlayingBook ->
+      (model, Audio.command (Audio.toJs Audio.Play))
     SetPlaying state ->
       let modelPlayback =
         model.playback
@@ -130,6 +134,8 @@ playbackUpdate msg model =
         ({ model | playback = { modelPlayback | progress = new_progress }}
         , Audio.command (Audio.toJs (Audio.SkipTo new_progress))
         )
+    -- PlaybackReady ->
+    --   (model, Cmd.none)
     UpdateLocalPlaystate date ->
       ((Playstates.updateLocalPlaystate model date), Cmd.none)
     TogglePlayback ->
@@ -158,6 +164,7 @@ subscriptions model =
   Sub.batch
   [ Audio.progress (\p -> (Msg.Playback (SetProgress p)))
   , Audio.playing (\play -> (Msg.Playback (SetPlaying play)))
+  , Audio.ready (\url -> (Msg.Playback (StartPlayingBook)))
   ]
 
 chapterDict : List Chapter -> Dict.Dict String Chapter
@@ -171,3 +178,11 @@ playstateDict states =
 bookDict : List Audiobook -> Dict.Dict String Audiobook
 bookDict books =
   Dict.fromList (List.map (\b -> (b.id, b)) books)
+
+
+                -- , SetProgress 
+                --     (Maybe.withDefault
+                --       0
+                --       (Maybe.map (\state -> state.position) (Dict.get id model.playstates))
+                --     )
+              -- ]

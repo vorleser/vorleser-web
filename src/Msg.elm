@@ -7,12 +7,14 @@ import Model exposing (..)
 import Date
 
 type LoginViewMsg = Submit | PasswordChange String | NameChange String
+
 type PlaybackMsg
   = TogglePlayback
   | UpdateLocalPlaystate (Date.Date)
   | SetProgress (Float)
   | SetPlaying (Bool)
   | PlayBook (String)
+  | StartPlayingBook
   | SetProgressManually (Float)
 
 type Msg

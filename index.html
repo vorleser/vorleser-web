@@ -23,10 +23,14 @@
   }, 500);
 
   app.ports.command.subscribe(function(command) {
-    if (command.command == "Play") {
+    if (command.command == "SetFile") {
       audio.pause();
       delete audio;
       audio = new Audio(command.arg);
+      audio.addEventListener("canplay", () =>{
+        app.ports.ready.send(command.arg)
+      });
+    } else if (command.command === "Play") {
       audio.play();
     } else if (command.command === "Pause") {
       audio.pause();
