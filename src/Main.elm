@@ -1,24 +1,27 @@
-import View.Login
-import View.BookList
+import Dict
+import Date exposing (..)
+import Json.Decode
 import Html exposing (Html, button, div, text, input)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Http exposing (jsonBody)
-import Config
-import Json.Decode
-import Auth
-import Msg exposing (..)
-import Model exposing (..)
-import Material
-import Api
 import Task
+
+import Material
 import Material.Snackbar as Snackbar
 import Material.Helpers exposing (map1st, map2nd)
-import Audio
-import Dict
+
+import Api
+import Auth
+import Config
 import Playstates
+import Audio
 import Error
-import Date exposing (..)
+import Msg exposing (..)
+import Model exposing (..)
+
+import View.Login
+import View.BookList
 
 main =
   Html.program { init = init, view = view, update = update, subscriptions = subscriptions }
