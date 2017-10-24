@@ -50,11 +50,8 @@
   })
 
   function sendProgress() {
-    console.log(audio.readyState)
-    if (audio.readyState == 4) {
-      console.log("sending progress: ")
-      app.ports.progress.send(audio.currentTime)
-    }
+    // Only send progress if we actually are ready
+    app.ports.progress.send(audio.currentTime)
   }
 
   function sendPlaying() {

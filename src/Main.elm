@@ -5,6 +5,7 @@ import Html exposing (Html, button, div, text, input)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Http exposing (jsonBody)
+import Time
 import Task
 
 import Material
@@ -147,6 +148,8 @@ playbackUpdate msg model =
         )
     UpdateLocalPlaystate date ->
       ((Playstates.updateLocalPlaystate model date), Cmd.none)
+    UpdateRemotePlaystates ->
+      (model, Api.updatePlaystates model)
     TogglePlayback ->
       (model, Audio.command (Audio.toJs Audio.Toggle))
 
@@ -174,6 +177,7 @@ subscriptions model =
   [ Audio.progress (\p -> (Msg.Playback (UpdateProgress p)))
   , Audio.playing (\play -> (Msg.Playback (SetPlaying play)))
   , Audio.ready (\pos -> (Msg.Playback (BookReadyAt pos)))
+  , Time.every (Time.second * Config.playstateUploadInterval) (\_ -> (Msg.Playback UpdateRemotePlaystates))
   ]
 
 chapterDict : List Chapter -> Dict.Dict String Chapter
@@ -187,11 +191,3 @@ playstateDict states =
 bookDict : List Audiobook -> Dict.Dict String Audiobook
 bookDict books =
   Dict.fromList (List.map (\b -> (b.id, b)) books)
-
-
-                -- , SetProgress 
-                --     (Maybe.withDefault
-                --       0
-                --       (Maybe.map (\state -> state.position) (Dict.get id model.playstates))
-                --     )
-              -- ]
