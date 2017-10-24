@@ -131,7 +131,7 @@ playbackUpdate msg model =
           { model | playback = { modelPlayback | playing = state }}
         in
           (newModel, Api.updatePlaystates model )
-    SetProgress new_progress ->
+    UpdateProgress new_progress ->
       let modelPlayback =
         model.playback
       in
@@ -171,7 +171,7 @@ view model =
 subscriptions: Model -> Sub Msg
 subscriptions model =
   Sub.batch
-  [ Audio.progress (\p -> (Msg.Playback (SetProgress p)))
+  [ Audio.progress (\p -> (Msg.Playback (UpdateProgress p)))
   , Audio.playing (\play -> (Msg.Playback (SetPlaying play)))
   , Audio.ready (\pos -> (Msg.Playback (BookReadyAt pos)))
   ]

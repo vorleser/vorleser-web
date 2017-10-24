@@ -11,7 +11,7 @@ type LoginViewMsg = Submit | PasswordChange String | NameChange String
 type PlaybackMsg
   = TogglePlayback
   | UpdateLocalPlaystate (Date.Date)
-  | SetProgress (Float)
+  | UpdateProgress (Float)
   | SetPlaying (Bool)
   | PlayBook (String)
   | BookReadyAt (Float)
