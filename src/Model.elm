@@ -25,6 +25,7 @@ type alias Playback = {
     currentBook: Maybe String
   , progress: Float
   , playing: Bool
+  , hasPlayed: Bool
 }
 
 

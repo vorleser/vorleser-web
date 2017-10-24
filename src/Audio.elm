@@ -6,30 +6,39 @@ type alias Playback = {
   , progress: Float
 }
 
-type Command = SetFile (String) | Play | Pause | Unpause | SkipTo (Float) | Toggle
+type alias Arg = {
+    file: Maybe String
+  , position: Maybe Float
+}
+
+argNothing: Arg
+argNothing =
+  { file = Nothing, position =  Nothing}
+
+type Command = SetFile (String, Float) | Play | Pause | Unpause | SkipTo (Float) | Toggle
 type alias JsCommand =
   { command : String
-  , arg : Maybe String
+  , arg : Arg
   }
 
 toJs : Command -> JsCommand
 toJs command =
   case command of
-    SetFile name ->
-      { command = "SetFile", arg = Just name }
+    SetFile (name, pos) ->
+      { command = "SetFile", arg = { file = Just name,  position = Just pos } }
     Play ->
-      { command = "Play", arg = Nothing }
+      { command = "Play", arg = argNothing }
     Pause ->
-      { command = "Pause", arg = Nothing }
+      { command = "Pause", arg = argNothing }
     Unpause ->
-      { command = "Unpause", arg = Nothing }
+      { command = "Unpause", arg = argNothing }
     Toggle ->
-      { command = "Toggle", arg = Nothing }
+      { command = "Toggle", arg = argNothing }
     SkipTo num ->
-      { command = "SkipTo", arg = Just (toString num) }
+      { command = "SkipTo", arg = { file = Nothing, position = Just num } }
 
 
 port command  : JsCommand -> Cmd msg
 port progress : (Float -> msg) -> Sub msg
 port playing : (Bool -> msg) -> Sub msg
-port ready : (String -> msg) -> Sub msg
+port ready : (Float -> msg) -> Sub msg

@@ -26,9 +26,10 @@
     if (command.command == "SetFile") {
       audio.pause();
       delete audio;
-      audio = new Audio(command.arg);
-      audio.addEventListener("canplay", () =>{
-        app.ports.ready.send(command.arg)
+      audio = new Audio(command.arg.file);
+      audio.currentTime = command.arg.position
+      audio.addEventListener("canplay", () => {
+        app.ports.ready.send(audio.position || 0)
       });
     } else if (command.command === "Play") {
       audio.play();
@@ -43,14 +44,17 @@
         audio.pause()
       }
     } else if (command.command === "SkipTo") {
-      audio.currentTime = Number(command.arg);
+      audio.currentTime = command.arg.position;
     }
     sendPlaying();
   })
 
   function sendProgress() {
-    console.log("sending progress: ")
-    app.ports.progress.send(audio.currentTime)
+    console.log(audio.readyState)
+    if (audio.readyState == 4) {
+      console.log("sending progress: ")
+      app.ports.progress.send(audio.currentTime)
+    }
   }
 
   function sendPlaying() {

@@ -41,6 +41,7 @@ init =
     { currentBook = Nothing
     , playing = False
     , progress = 0
+    , hasPlayed = False
     }
   }, Cmd.none)
 
@@ -98,20 +99,30 @@ playbackUpdate : PlaybackMsg -> Model -> (Model, Cmd Msg)
 playbackUpdate msg model =
   case msg of
     PlayBook id ->
-      let modelPlayback =
-        model.playback
+      let
+        modelPlayback = model.playback
+        progress =
+          (Maybe.withDefault
+              0
+              (Maybe.map (\state -> state.position) (Dict.get id model.playstates))
+          )
       in
         case model.loginToken of
           Just secret ->
-            ({ model | playback = { modelPlayback | currentBook = Just id }}, 
+            ({ model | playback = { modelPlayback | currentBook = Just id, hasPlayed = False, progress = progress }},
               Audio.command
-                (Audio.toJs (Audio.SetFile (Config.baseUrlData ++ "/" ++ id ++ "?auth=" ++ secret )))
+                (Audio.toJs (Audio.SetFile ((Config.baseUrlData ++ "/" ++ id ++ "?auth=" ++ secret ), progress)))
             )
           _ ->
             -- todo: display error here, should not be reachable
             (model, Cmd.none)
-    StartPlayingBook ->
-      (model, Audio.command (Audio.toJs Audio.Play))
+    BookReadyAt position ->
+      let state = model.playback
+      in
+        if state.hasPlayed then
+          (model, Cmd.none)
+        else
+          ({ model | playback = { state | hasPlayed = True } }, Audio.command (Audio.toJs (Audio.Play)))
     SetPlaying state ->
       let modelPlayback =
         model.playback
@@ -134,8 +145,6 @@ playbackUpdate msg model =
         ({ model | playback = { modelPlayback | progress = new_progress }}
         , Audio.command (Audio.toJs (Audio.SkipTo new_progress))
         )
-    -- PlaybackReady ->
-    --   (model, Cmd.none)
     UpdateLocalPlaystate date ->
       ((Playstates.updateLocalPlaystate model date), Cmd.none)
     TogglePlayback ->
@@ -164,7 +173,7 @@ subscriptions model =
   Sub.batch
   [ Audio.progress (\p -> (Msg.Playback (SetProgress p)))
   , Audio.playing (\play -> (Msg.Playback (SetPlaying play)))
-  , Audio.ready (\url -> (Msg.Playback (StartPlayingBook)))
+  , Audio.ready (\pos -> (Msg.Playback (BookReadyAt pos)))
   ]
 
 chapterDict : List Chapter -> Dict.Dict String Chapter
