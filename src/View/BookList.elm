@@ -41,6 +41,7 @@ view model =
     ]
   )
 
+type ButtonSymbol = Pause | Play
 
 listItem: Model -> Model.Audiobook -> Int -> Html Msg.Msg
 listItem model book index =
@@ -56,32 +57,46 @@ listItem model book index =
         Just secret ->
           Config.baseUrl ++ "/coverart/" ++ book.id ++ "?auth=" ++ secret
         _ ->
-          "lol"
+          "lol" -- this should be unreachable, TODO: error message or something similar
+    button_symbol =
+      case model.playback.currentBook of
+        Just id ->
+          if id == book.id && model.playback.playing then
+            Pause
+          else
+            Play
+        Nothing ->
+            Play
+
   in
-    -- let playButton =
-    --   (\id -> \index -> Button.render Msg.Mdl [index] model.mdl [Button.icon] [ Icon.i "play_circle_outline" ])
-    --   -- , Button.accent |> when (Set.member k model.toggles)
-    --   -- ]
     Lists.li [ Lists.withSubtitle ]
     [ Lists.content []
       [ Lists.avatarImage imageUrl []
       , text book.title
-      , playButton model index book.id
+      , playButton model index book.id button_symbol
       , Lists.subtitle [] [ text subtitle ]
       ]
     ]
 
-playButton: Model -> Int -> String -> Html Msg.Msg
-playButton model index id =
+playButton: Model -> Int -> String -> ButtonSymbol -> Html Msg.Msg
+playButton model index id button_symbol =
   Button.render
   Msg.Mdl
   [index]
   model.mdl
   [ Button.icon
-  , Options.onClick (Msg.Playback (Msg.PlayBook id))
+  , Options.onClick
+    (case button_symbol of
+      Play -> (Msg.Playback (Msg.PlayBook id))
+      Pause -> (Msg.Playback (Msg.TogglePlayback))
+    )
   , Options.css "float" "right"
   ]
-  [ Icon.i "play_circle_outline" ]
+  [ Icon.i
+    (case button_symbol of
+      Play -> "play_circle_outline"
+      Pause -> "pause_circle_outline")
+  ]
 
 formatTime: Float -> String
 formatTime seconds =
