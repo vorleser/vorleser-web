@@ -16,46 +16,60 @@ import Material
 import Material.Snackbar as Snackbar
 import View.Playback
 import Dict
+import Config
 
 type alias Mdl =
   Material.Model
 
 view: Model -> Html Msg.Msg
 view model =
-  Grid.grid [] [
-    Grid.cell []
-    [ (Lists.ul []
-      (
-      List.map2
-      (\book -> \k -> (listItem model book k))
-      (Dict.values model.books)
-      (List.range 0 (Dict.size model.books))
-      ))
+  (div []
+    [ (div
+      [ style [("display", "flex"), ("justify-content", "center")] ]
+      [ (Lists.ul [
+          Options.css "width" "90%"
+        ]
+        (
+        List.map2
+        (\book -> \k -> (listItem model book k))
+        (Dict.values model.books)
+        (List.range 0 (Dict.size model.books))
+        ))
+      ])
       , View.Playback.view model
       , Snackbar.view model.snackbar |> Html.map Msg.Snackbar
     ]
-    -- View.Playback.view model
-  ]
+  )
 
 
 listItem: Model -> Model.Audiobook -> Int -> Html Msg.Msg
 listItem model book index =
-  let subtitle =
-    case book.artist of
-      Just author ->
-        author ++ " — (" ++ formatTime book.length ++ ")"
-      _ ->
-        "(" ++ formatTime book.length ++ ")"
+  let
+    subtitle =
+      case book.artist of
+        Just author ->
+          author ++ " — (" ++ formatTime book.length ++ ")"
+        _ ->
+          "(" ++ formatTime book.length ++ ")"
+    imageUrl =
+      case model.loginToken of
+        Just secret ->
+          Config.baseUrl ++ "/coverart/" ++ book.id ++ "?auth=" ++ secret
+        _ ->
+          "lol"
   in
     -- let playButton =
     --   (\id -> \index -> Button.render Msg.Mdl [index] model.mdl [Button.icon] [ Icon.i "play_circle_outline" ])
     --   -- , Button.accent |> when (Set.member k model.toggles)
     --   -- ]
-    Lists.li [ Lists.withSubtitle ] [ Lists.content []
-    [ text book.title
-    , playButton model index book.id
-    , Lists.subtitle [] [ text subtitle ]
-    ] ]
+    Lists.li [ Lists.withSubtitle ]
+    [ Lists.content []
+      [ Lists.avatarImage imageUrl []
+      , text book.title
+      , playButton model index book.id
+      , Lists.subtitle [] [ text subtitle ]
+      ]
+    ]
 
 playButton: Model -> Int -> String -> Html Msg.Msg
 playButton model index id =
@@ -65,6 +79,7 @@ playButton model index id =
   model.mdl
   [ Button.icon
   , Options.onClick (Msg.Playback (Msg.PlayBook id))
+  , Options.css "float" "right"
   ]
   [ Icon.i "play_circle_outline" ]
 
