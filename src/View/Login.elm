@@ -20,22 +20,23 @@ type alias Mdl =
 
 view: Model -> Html Msg.Msg
 view model =
-  Grid.grid [] [
-    Grid.cell
-      []
-      [ (div
-        [ style
-          [ ("display", "box")
-          , ("box-pack", "center")
-          ]
+  (div
+    [ style [("display", "flex"), ("justify-content", "center")] ]
+    [(div
+      [ style
+        [ ("display", "flex")
+        , ("align-items", "center")
+        , ("justify-content", "space-between")
+        , ("flex-wrap", "wrap")
+        , ("max-width", "50%")
         ]
-        [ (userField model)
-          , (passwordField model)
-          , (loginButton model)
-          , (Snackbar.view model.snackbar |> Html.map Msg.Snackbar)
-        ])
       ]
-  ]
+      [ (userField model)
+        , (passwordField model)
+        , (loginButton model)
+        , (Snackbar.view model.snackbar |> Html.map Msg.Snackbar)
+      ])
+    ])
 
 passwordField: Model -> Html Msg.Msg
 passwordField model =
@@ -43,6 +44,8 @@ passwordField model =
   [ Textfield.label "Enter password"
   , Textfield.floatingLabel
   , Textfield.password
+  , Textfield.value model.loginView.password
+  , Options.css "margin" "20px"
   , Options.onInput (Msg.Login << Msg.PasswordChange)
   , Options.on "keydown" (Json.Decode.andThen isEnter keyCode)
   ]
@@ -53,6 +56,8 @@ userField model =
   Textfield.render Msg.Mdl [1] model.mdl
   [ Textfield.label "Enter username"
   , Textfield.floatingLabel
+  , Options.css "margin" "20px"
+  , Textfield.value model.loginView.name
   , Textfield.text_
   , Textfield.autofocus
   , Options.onInput (Msg.Login << Msg.NameChange)
@@ -64,6 +69,8 @@ loginButton model =
   Button.render Msg.Mdl [2] model.mdl
   [ Button.raised
   , Button.ripple
+  , Options.css "align-self" "flex-end"
+  , Options.css "margin-left" "auto"
   , Button.type_ "submit"
   , Options.on "keydown" (Json.Decode.andThen isEnter keyCode)
   , Options.onClick (Msg.Login Msg.Submit)
