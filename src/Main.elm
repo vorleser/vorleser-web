@@ -16,10 +16,11 @@ import Api
 import Auth
 import Config
 import Playstates
-import Audio
 import Error
 import Msg exposing (..)
 import Model exposing (..)
+import Audio
+import Session
 
 import View.Login
 import View.BookList
@@ -65,7 +66,10 @@ update msg model =
         Ok secret ->
           (
             { model | loginToken = Just secret.secret, currentView = BookListView }
-            , Api.getEverything { model | loginToken = Just secret.secret }
+            , Cmd.batch [
+                Api.getEverything { model | loginToken = Just secret.secret }
+              , Session.saveSession secret.secret
+            ]
           )
         Err err ->
           Error.handleHttpError err "logging in" model
@@ -177,6 +181,7 @@ subscriptions model =
   [ Audio.progress (\p -> (Msg.Playback (UpdateProgress p)))
   , Audio.playing (\play -> (Msg.Playback (SetPlaying play)))
   , Audio.ready (\pos -> (Msg.Playback (BookReadyAt pos)))
+  , Session.getSession (\key -> (Msg.LoggedIn (Ok { secret = key })))
   , Time.every (Time.second * Config.playstateUploadInterval) (\_ -> (Msg.Playback UpdateRemotePlaystates))
   ]
 
