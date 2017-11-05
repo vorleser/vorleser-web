@@ -11,6 +11,7 @@ import Task
 import Material
 import Material.Snackbar as Snackbar
 import Material.Helpers exposing (map1st, map2nd)
+import Material.Layout as Layout
 
 import Api
 import Auth
@@ -169,11 +170,26 @@ loginViewUpdate msg model =
 
 view : Model -> Html Msg
 view model =
-  case model.currentView of
-    LoginView ->
-      View.Login.view model
-    BookListView ->
-      View.BookList.view model
+  Layout.render Mdl model.mdl [ Layout.fixedHeader ]
+    { header = [
+      Layout.row []
+      [ Layout.title [] [ text Config.name ]
+      , Layout.spacer
+      , Layout.navigation [] [
+          Layout.link
+            [ Layout.href "https://github.com/hatzel/vorleser-web" ]
+            [ Html.span [] [ text "github" ] ]
+        ]
+      ]
+    ]
+    , drawer = [ Html.text "LOL" ]
+    , tabs = ([], [])
+    , main = [(case model.currentView of
+      LoginView ->
+        View.Login.view model
+      BookListView ->
+        View.BookList.view model)]
+    }
 
 subscriptions: Model -> Sub Msg
 subscriptions model =
