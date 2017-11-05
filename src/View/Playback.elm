@@ -13,27 +13,26 @@ import Dict
 
 view: Model -> Html Msg.Msg
 view model =
-  Grid.grid [] [
-    Grid.cell []
-    [ (div
-        [ style
-          [ ("bottom", "0")
-          , ("position", "fixed")
-          , ("width", "100%")
-          , ("background-color", "white")
-          ]
-        ]
-      [
-        playPauseButton model,
-        Slider.view [
-          Slider.onChange (\x -> Msg.Playback (Msg.SetProgressManually (x / 1000))),
-          Slider.value (model.playback.progress * 1000),
-          Slider.min 0,
-          Slider.max ((Maybe.withDefault 0 (currentBookLength model)) * 1000)],
-        text (currentBookTitle model)
-      ])
+  (div
+    [ style
+      [ ("bottom", "0")
+      , ("position", "fixed")
+      , ("width", "100%")
+      , ("background-color", "white")
+      ]
+      , Html.Attributes.classList [
+        ("mdl-shadow--16dp", True)
+      ]
     ]
-  ]
+  [
+    playPauseButton model,
+    Slider.view [
+      Slider.onChange (\x -> Msg.Playback (Msg.SetProgressManually (x / 1000))),
+      Slider.value (model.playback.progress * 1000),
+      Slider.min 0,
+      Slider.max ((Maybe.withDefault 0 (currentBookLength model)) * 1000)],
+    text (currentBookTitle model)
+  ])
 
 playPauseButton: Model -> Html Msg.Msg
 playPauseButton model =
@@ -44,7 +43,7 @@ playPauseButton model =
       "play_arrow"
   in
   Button.render Msg.Mdl [] model.mdl
-  [ Button.icon, Options.onClick (Msg.Playback Msg.TogglePlayback) ]
+  [ Button.icon, Options.onClick (Msg.Playback Msg.TogglePlayback)]
   [ Icon.i icon ]
 
 
