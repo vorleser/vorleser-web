@@ -45,6 +45,7 @@ init =
     , playing = False
     , progress = 0
     , hasPlayed = False
+    , volume = 100
     }
   }, Cmd.none)
 
@@ -160,6 +161,14 @@ playbackUpdate msg model =
       (model, Api.updatePlaystates model)
     TogglePlayback ->
       (model, Audio.command (Audio.toJs Audio.Toggle))
+    SetVolume volume ->
+      let modelPlayback =
+        model.playback
+      in
+        (
+          { model | playback = { modelPlayback | volume = volume }}
+        , Audio.command (Audio.toJs (Audio.SetVolume (volume / 100)))
+        )
 
 loginViewUpdate : LoginViewMsg -> LoginViewModel -> (LoginViewModel, Cmd Msg)
 loginViewUpdate msg model =

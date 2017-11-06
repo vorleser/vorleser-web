@@ -20,6 +20,9 @@ app.ports.command.subscribe(function(command) {
     audio.pause();
   } else if (command.command === "Unpause") {
     audio.play();
+  } else if (command.command === "SetVolume") {
+    audio.volume = command.arg.volume;
+    return
   } else if (command.command === "Toggle") {
     if (audio.paused) {
       audio.play();

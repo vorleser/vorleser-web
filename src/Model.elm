@@ -26,6 +26,7 @@ type alias Playback = {
   , progress: Float
   , playing: Bool
   , hasPlayed: Bool
+  , volume: Float
 }
 
 
