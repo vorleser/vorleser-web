@@ -8,7 +8,7 @@ import Material.Grid as Grid
 import Material.Button as Button
 import Material.Options as Options
 import Material.Icon as Icon
-import Html exposing (Html, button, div, text, input)
+import Html exposing (Html, button, div, text, input, span)
 import Dict
 
 view: Model -> Html Msg.Msg
@@ -56,6 +56,7 @@ progressWithTitle model =
     (div [style [
           ("flex-grow", "0.8")
         , ("display", "flex")
+        , ("align-items", "center")
         , ("justify-content", "center")
         , ("flex-direction", "column")
         ]] [
@@ -64,8 +65,9 @@ progressWithTitle model =
         , Slider.value (model.playback.progress * 1000)
         , Slider.min 0
         , Slider.max ((Maybe.withDefault 0 (currentBookLength model)) * 1000)
+        , Options.css "align-self" "stretch"
       ]
-      , text (currentBookTitle model)
+      , (span [Html.Attributes.class "mdl-color-text--grey-700"] [text (currentBookTitle model)])
     ])
 
 playPauseButton: Model -> Html Msg.Msg
