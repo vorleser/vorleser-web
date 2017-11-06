@@ -149,7 +149,10 @@ playbackUpdate msg model =
         model.playback
       in
         ({ model | playback = { modelPlayback | progress = new_progress }}
-        , Audio.command (Audio.toJs (Audio.SkipTo new_progress))
+        , Cmd.batch [
+              Audio.command (Audio.toJs (Audio.SkipTo new_progress))
+            , Api.updatePlaystates model
+          ]
         )
     UpdateLocalPlaystate date ->
       ((Playstates.updateLocalPlaystate model date), Cmd.none)
