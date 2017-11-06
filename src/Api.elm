@@ -87,7 +87,7 @@ updatePlaystates model =
   Auth.post
   model
   "/update_playstates"
-  Decode.string
+  Decode.value
   (
     Encode.list
     (List.map

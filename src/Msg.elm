@@ -5,6 +5,7 @@ import Material
 import Material.Snackbar as Snackbar
 import Model exposing (..)
 import Date
+import Json.Decode
 
 type LoginViewMsg = Submit | PasswordChange String | NameChange String
 
@@ -28,5 +29,5 @@ type Msg
   | ReceiveAllData (Result Http.Error AllThings)
   | ReceiveBooks (Result Http.Error (List Audiobook))
   | Snackbar (Snackbar.Msg String)
-  | UpdatedPlaystates (Result Http.Error String)
+  | UpdatedPlaystates (Result Http.Error Json.Decode.Value)
   | Playback (PlaybackMsg)
