@@ -28,6 +28,7 @@ view model =
       [ style [("display", "flex"), ("justify-content", "center")] ]
       [ (Lists.ul [
           Options.css "width" "90%"
+          , Options.css "margin-bottom" "10%"
         ]
         (
         List.map2

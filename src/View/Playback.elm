@@ -19,19 +19,36 @@ view model =
       , ("position", "fixed")
       , ("width", "100%")
       , ("background-color", "white")
+      , ("height", "10%")
+      , ("display", "flex")
+      , ("align-items", "center")
+      , ("justify-content", "space-evenly")
       ]
       , Html.Attributes.classList [
         ("mdl-shadow--16dp", True)
       ]
     ]
   [
-    playPauseButton model,
-    Slider.view [
-      Slider.onChange (\x -> Msg.Playback (Msg.SetProgressManually (x / 1000))),
-      Slider.value (model.playback.progress * 1000),
-      Slider.min 0,
-      Slider.max ((Maybe.withDefault 0 (currentBookLength model)) * 1000)],
-    text (currentBookTitle model)
+    (div
+      [ style [
+          ("display", "flex")
+        , ("flex-grow", "1")
+        , ("justify-content", "space-evenly")
+        , ("align-items", "center")
+        ]
+      ]
+      [
+        playPauseButton model,
+        Slider.view [
+            Slider.onChange (\x -> Msg.Playback (Msg.SetProgressManually (x / 1000)))
+          , Slider.value (model.playback.progress * 1000)
+          , Slider.min 0
+          , Slider.max ((Maybe.withDefault 0 (currentBookLength model)) * 1000)
+          , Options.css "flex-grow" "0.8"
+        ],
+        text (currentBookTitle model)
+      ]
+    )
   ])
 
 playPauseButton: Model -> Html Msg.Msg
