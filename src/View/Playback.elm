@@ -45,7 +45,7 @@ view model =
           , Slider.value (model.playback.volume * 100)
           , Slider.min 0
           , Slider.max 100
-          , Options.css "flex-grow" "0.05"
+          , Options.css "flex" "0.1 0.5 2%"
         ]
       ]
     )
