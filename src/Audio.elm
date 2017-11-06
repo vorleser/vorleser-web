@@ -16,7 +16,7 @@ argNothing: Arg
 argNothing =
   { file = Nothing, position =  Nothing, volume = Nothing }
 
-type Command = SetFile (String, Float) | Play | Pause | Unpause | SkipTo (Float) | Toggle | SetVolume (Float)
+type Command = SetFile (String, Float, Float) | Play | Pause | Unpause | SkipTo (Float) | Toggle | SetVolume (Float)
 type alias JsCommand =
   { command : String
   , arg : Arg
@@ -25,8 +25,8 @@ type alias JsCommand =
 toJs : Command -> JsCommand
 toJs command =
   case command of
-    SetFile (name, pos) ->
-      { command = "SetFile", arg = { file = Just name,  position = Just pos, volume = Nothing } }
+    SetFile (name, pos, vol) ->
+      { command = "SetFile", arg = { file = Just name,  position = Just pos, volume = Just vol } }
     Play ->
       { command = "Play", arg = argNothing }
     Pause ->

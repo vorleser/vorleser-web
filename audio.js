@@ -11,6 +11,7 @@ app.ports.command.subscribe(function(command) {
     delete audio;
     audio = new Audio(command.arg.file);
     audio.currentTime = command.arg.position
+    audio.volume = command.arg.volume || 1
     audio.addEventListener("canplay", () => {
       app.ports.ready.send(audio.position || 0)
     });

@@ -45,7 +45,7 @@ init =
     , playing = False
     , progress = 0
     , hasPlayed = False
-    , volume = 100
+    , volume = 1
     }
   }, Cmd.none)
 
@@ -118,7 +118,11 @@ playbackUpdate msg model =
           Just secret ->
             ({ model | playback = { modelPlayback | currentBook = Just id, hasPlayed = False, progress = progress }},
               Audio.command
-                (Audio.toJs (Audio.SetFile ((Config.baseUrlData ++ "/" ++ id ++ "?auth=" ++ secret ), progress)))
+                (Audio.toJs (Audio.SetFile ((
+                    Config.baseUrlData ++ "/" ++ id ++ "?auth=" ++ secret )
+                  , progress
+                  , model.playback.volume)
+                ))
             )
           _ ->
             -- todo: display error here, should not be reachable
@@ -167,7 +171,7 @@ playbackUpdate msg model =
       in
         (
           { model | playback = { modelPlayback | volume = volume }}
-        , Audio.command (Audio.toJs (Audio.SetVolume (volume / 100)))
+        , Audio.command (Audio.toJs (Audio.SetVolume volume))
         )
 
 loginViewUpdate : LoginViewMsg -> LoginViewModel -> (LoginViewModel, Cmd Msg)

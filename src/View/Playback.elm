@@ -39,17 +39,10 @@ view model =
       ]
       [
           playPauseButton model
+        , progressWithTitle model
         , Slider.view [
-            Slider.onChange (\x -> Msg.Playback (Msg.SetProgressManually (x / 1000)))
-          , Slider.value (model.playback.progress * 1000)
-          , Slider.min 0
-          , Slider.max ((Maybe.withDefault 0 (currentBookLength model)) * 1000)
-          , Options.css "flex-grow" "0.8"
-        ]
-        , text (currentBookTitle model)
-        , Slider.view [
-            Slider.onChange (\x -> Msg.Playback (Msg.SetVolume x))
-          , Slider.value model.playback.volume
+            Slider.onChange (\x -> Msg.Playback (Msg.SetVolume (x / 100)))
+          , Slider.value (model.playback.volume * 100)
           , Slider.min 0
           , Slider.max 100
           , Options.css "flex-grow" "0.05"
@@ -57,6 +50,23 @@ view model =
       ]
     )
   ])
+
+progressWithTitle: Model -> Html Msg.Msg
+progressWithTitle model =
+    (div [style [
+          ("flex-grow", "0.8")
+        , ("display", "flex")
+        , ("justify-content", "center")
+        , ("flex-direction", "column")
+        ]] [
+      Slider.view [
+          Slider.onChange (\x -> Msg.Playback (Msg.SetProgressManually (x / 1000)))
+        , Slider.value (model.playback.progress * 1000)
+        , Slider.min 0
+        , Slider.max ((Maybe.withDefault 0 (currentBookLength model)) * 1000)
+      ]
+      , text (currentBookTitle model)
+    ])
 
 playPauseButton: Model -> Html Msg.Msg
 playPauseButton model =
