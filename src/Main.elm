@@ -12,6 +12,7 @@ import Material
 import Material.Snackbar as Snackbar
 import Material.Helpers exposing (map1st, map2nd)
 import Material.Layout as Layout
+import Material.Snackbar as Snackbar
 
 import Api
 import Auth
@@ -74,7 +75,7 @@ update msg model =
             ]
           )
         Err err ->
-          Error.handleHttpError err "logging in" model
+          handleLoginError err model
     RequestEverything ->
       (model, Api.getEverything model)
     RequestBooks ->
@@ -228,3 +229,29 @@ playstateDict states =
 bookDict : List Audiobook -> Dict.Dict String Audiobook
 bookDict books =
   Dict.fromList (List.map (\b -> (b.id, b)) books)
+
+handleLoginError :  Http.Error -> Model.Model -> (Model.Model, Cmd Msg.Msg)
+handleLoginError error model =
+  let
+    resource = "logging in"
+  in
+    case error of
+      Http.BadPayload info _ ->
+        Debug.log info
+          (Error.errorSnackbar model "" ("Error " ++  resource ++ ", got an unexpected payload."))
+      Http.NetworkError ->
+        (Error.errorSnackbar model "" ("Error " ++ resource ++ ", check your network connection."))
+      Http.BadStatus resp ->
+        let
+          login = model.loginView
+        in
+          case resp.status.code of
+            401 ->
+              ({ model | loginView = { login | name = "Invalid password!" } }, Cmd.none)
+            _ ->
+              (Error.errorSnackbar model "" ("Error " ++ resource ++ ". Bad status code: " ++ resp.status.message))
+      Http.Timeout ->
+        (Error.errorSnackbar model "" ("Timeout " ++ resource))
+      Http.BadUrl _ ->
+        (Error.errorSnackbar model "" "Bad url, how does this even happen?")
+

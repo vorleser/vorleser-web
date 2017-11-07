@@ -46,7 +46,7 @@ passwordField model =
   , Textfield.password
   , Textfield.value model.loginView.password
   , Options.css "margin" "20px"
-  , Options.onInput (Msg.Login << Msg.PasswordChange)
+  , Options.onInput <| Msg.Login << Msg.PasswordChange
   , Options.on "keydown" (Json.Decode.andThen isEnter keyCode)
   ]
   []
@@ -60,7 +60,7 @@ userField model =
   , Textfield.value model.loginView.name
   , Textfield.text_
   , Textfield.autofocus
-  , Options.onInput (Msg.Login << Msg.NameChange)
+  , Options.onInput <| Msg.Login << Msg.NameChange
   ]
   []
 
