@@ -31,3 +31,5 @@ type Msg
   | Snackbar (Snackbar.Msg String)
   | UpdatedPlaystates (Result Http.Error Json.Decode.Value)
   | Playback (PlaybackMsg)
+  | PlaybackViewExpand
+  | PlaybackViewCollapse

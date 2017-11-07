@@ -10,46 +10,58 @@ import Material.Options as Options
 import Material.Icon as Icon
 import Html exposing (Html, button, div, text, input, span)
 import Dict
+import View.ChapterList
 
 view: Model -> Html Msg.Msg
 view model =
-  (div
-    [ style
+  let
+    style_list =
       [ ("bottom", "0")
       , ("position", "fixed")
       , ("width", "100%")
+      , ("transition", "height 0.5s ease-in-out")
       , ("background-color", "white")
-      , ("height", "10%")
       , ("display", "flex")
       , ("align-items", "center")
       , ("justify-content", "space-evenly")
       ]
-      , Html.Attributes.classList [
-        ("mdl-shadow--16dp", True)
-      ]
-    ]
-  [
+    height = if model.playbackView.expanded then
+      "90%"
+    else
+      "10%"
+  in
     (div
-      [ style [
-          ("display", "flex")
-        , ("flex-grow", "1")
-        , ("justify-content", "space-evenly")
-        , ("align-items", "center")
+      [ style (style_list ++ [("height", height)])
+        , Html.Attributes.classList [
+          ("mdl-shadow--16dp", True)
         ]
       ]
-      [
-          playPauseButton model
-        , progressWithTitle model
-        , Slider.view [
-            Slider.onChange (\x -> Msg.Playback (Msg.SetVolume (x / 100)))
-          , Slider.value (model.playback.volume * 100)
-          , Slider.min 0
-          , Slider.max 100
-          , Options.css "flex" "0.1 0.5 2%"
+    [
+      (div
+        [ style [
+            ("display", "flex")
+          , ("flex-grow", "1")
+          , ("padding-top", "2em")
+          , ("justify-content", "space-evenly")
+          , ("align-self", "flex-start")
+          , ("align-items", "center")
+          ]
         ]
-      ]
-    )
-  ])
+        [
+            playPauseButton model
+          , progressWithTitle model
+          , Slider.view [
+              Slider.onChange (\x -> Msg.Playback (Msg.SetVolume (x / 100)))
+            , Slider.value (model.playback.volume * 100)
+            , Slider.min 0
+            , Slider.max 100
+            , Options.css "flex" "0.1 0.5 2%"
+          ]
+          , (expandButton model)
+        ]
+      )
+      , (View.ChapterList.view model)
+    ])
 
 progressWithTitle: Model -> Html Msg.Msg
 progressWithTitle model =
@@ -82,6 +94,16 @@ playPauseButton model =
   [ Button.icon, Options.onClick (Msg.Playback Msg.TogglePlayback)]
   [ Icon.i icon ]
 
+expandButton: Model -> Html Msg.Msg
+expandButton model =
+  if model.playbackView.expanded then
+    Button.render Msg.Mdl [] model.mdl
+    [ Button.icon, Options.onClick (Msg.PlaybackViewCollapse)]
+    [ Icon.i "keyboard_arrow_down" ]
+  else
+    Button.render Msg.Mdl [] model.mdl
+    [ Button.icon, Options.onClick (Msg.PlaybackViewExpand)]
+    [ Icon.i "keyboard_arrow_up" ]
 
 currentBookTitle : Model -> String
 currentBookTitle model =

@@ -41,6 +41,7 @@ init =
   , snackbar = Snackbar.model
   , playstates = Dict.empty
   , chapters = Dict.empty
+  , playbackView = { expanded = False }
   , playback =
     { currentBook = Nothing
     , playing = False
@@ -102,6 +103,10 @@ update msg model =
       Debug.log (toString content) (model, Cmd.none)
     Playback subMsg ->
       playbackUpdate subMsg model
+    PlaybackViewExpand ->
+      ({ model | playbackView = { expanded = True} }, Cmd.none)
+    PlaybackViewCollapse ->
+      ({ model | playbackView = { expanded = False} }, Cmd.none)
 
 playbackUpdate : PlaybackMsg -> Model -> (Model, Cmd Msg)
 playbackUpdate msg model =
@@ -119,11 +124,11 @@ playbackUpdate msg model =
           Just secret ->
             ({ model | playback = { modelPlayback | currentBook = Just id, hasPlayed = False, progress = progress }},
               Audio.command
-                (Audio.toJs (Audio.SetFile ((
-                    Config.baseUrlData ++ "/" ++ id ++ "?auth=" ++ secret )
-                  , progress
-                  , model.playback.volume)
-                ))
+                (Audio.toJs (Audio.SetFile
+                  (Config.baseUrlData ++ "/" ++ id ++ "?auth=" ++ secret )
+                  progress
+                  model.playback.volume)
+                )
             )
           _ ->
             -- todo: display error here, should not be reachable

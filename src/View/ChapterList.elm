@@ -15,7 +15,6 @@ import Material.Icon as Icon
 import Material.Table as Table
 import Material
 import Material.Snackbar as Snackbar
-import View.Playback
 import Dict
 import Config
 
@@ -33,7 +32,7 @@ view model =
         model.playback.currentBook)
   in
     (div
-      [ style [("display", "flex"), ("justify-content", "center")] ]
+      [ style [("display", "flex"), ("justify-content", "center"), ("flex-wrap", ""), ("align-self", "flex-end")] ]
       [ Table.table []
       [ Table.thead []
         [ Table.tr []

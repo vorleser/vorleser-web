@@ -18,7 +18,12 @@ type alias Model = {
   , playstates: Dict String Playstate
   , chapters: Dict String (List Chapter)
   , snackbar: Snackbar.Model String
+  , playbackView: PlaybackView
   , playback: Playback
+}
+
+type alias PlaybackView = {
+  expanded: Bool
 }
 
 type alias Playback = {
