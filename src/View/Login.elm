@@ -62,16 +62,25 @@ passwordField model =
 
 userField: Model -> Html Msg.Msg
 userField model =
-  Textfield.render Msg.Mdl [1] model.mdl
-  [ Textfield.label "Enter username"
-  , Textfield.floatingLabel
-  , Options.css "margin" "20px"
-  , Textfield.value model.loginView.name
-  , Textfield.text_
-  , Textfield.autofocus
-  , Options.onInput <| Msg.Login << Msg.NameChange
-  ]
-  []
+  let params =
+    [ Textfield.label "Enter username"
+    , Textfield.floatingLabel
+    , Options.css "margin" "20px"
+    , Textfield.value model.loginView.name
+    , Textfield.text_
+    , Textfield.autofocus
+    , Options.onInput <| Msg.Login << Msg.NameChange
+    ]
+  in
+    case model.loginView.error of
+    Nothing ->
+      Textfield.render Msg.Mdl [1] model.mdl
+      params
+      []
+    Just error ->
+      Textfield.render Msg.Mdl [1] model.mdl
+      (params ++ [(Textfield.error error)])
+      []
 
 loginButton: Model -> Html Msg.Msg
 loginButton model =
