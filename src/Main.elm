@@ -218,9 +218,21 @@ subscriptions model =
   , Time.every (Time.second * Config.playstateUploadInterval) (\_ -> (Msg.Playback UpdateRemotePlaystates))
   ]
 
-chapterDict : List Chapter -> Dict.Dict String Chapter
+chapterDict : List Chapter -> Dict.Dict String (List Chapter)
 chapterDict chapters =
-  Dict.fromList (List.map (\c -> (c.audiobook_id, c)) chapters)
+  let empty_dict =
+    (Dict.fromList (List.map (\c -> (c.audiobook_id, [])) chapters))
+  in
+    (List.foldr
+      (\chapter dict -> Dict.update chapter.audiobook_id (appendIfJust chapter) dict)
+      empty_dict
+      chapters
+    )
+
+appendIfJust : v -> Maybe (List v) -> Maybe (List v)
+appendIfJust chapter list =
+  Maybe.map (\some -> some ++ [chapter]) list
+
 
 playstateDict : List Playstate -> Dict.Dict String Playstate
 playstateDict states =

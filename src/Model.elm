@@ -16,7 +16,7 @@ type alias Model = {
   , mdl: Material.Model
   , books: Dict String Audiobook
   , playstates: Dict String Playstate
-  , chapters: Dict String Chapter
+  , chapters: Dict String (List Chapter)
   , snackbar: Snackbar.Model String
   , playback: Playback
 }
