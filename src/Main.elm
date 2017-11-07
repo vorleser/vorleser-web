@@ -229,7 +229,7 @@ appendIfJust : v -> Maybe (List v) -> Maybe (List v)
 appendIfJust chapter list =
   case list of
     Just l ->
-      Just <| l ++ [chapter]
+      Just <| [chapter] ++ l
     Nothing ->
       Just [chapter]
 
@@ -266,4 +266,3 @@ handleLoginError error model =
         (Error.errorSnackbar model "" ("Timeout " ++ resource))
       Http.BadUrl _ ->
         (Error.errorSnackbar model "" "Bad url, how does this even happen?")
-
