@@ -12,6 +12,7 @@ import Material.Options as Options
 import Material.Grid as Grid
 import Material.Options as Options
 import Material.Icon as Icon
+import Material.Table as Table
 import Material
 import Material.Snackbar as Snackbar
 import View.Playback
@@ -31,25 +32,28 @@ view model =
         (\id -> Maybe.withDefault [] (Dict.get id model.chapters))
         model.playback.currentBook)
   in
-    (div []
-      [ (Lists.ul [
-              Options.css "width" "90%"
-            , Options.css "margin-bottom" "10%"
+    (div
+      [ style [("display", "flex"), ("justify-content", "center")] ]
+      [ Table.table []
+      [ Table.thead []
+        [ Table.tr []
+          [ Table.th [] [text "Time"]
+          , Table.th [] [text "Title"]
           ]
-          (List.map2
-            (\chapter -> \k -> (listItem model chapter k))
-            current_chapters
-            (List.range 0 (List.length current_chapters))
-          )
+        ]
+      , Table.tbody []
+        (List.map2
+          (\chapter -> \k -> (listItem model chapter k))
+          current_chapters
+          (List.range 0 (List.length current_chapters))
         )
-      ]
+      ] ]
     )
 
 listItem: Model -> Model.Chapter -> Int -> Html Msg.Msg
 listItem model chapter index =
-  Lists.li []
-  [ Lists.content
+  Table.tr
     [ Options.onClick (Msg.Playback (Msg.SetProgressManually chapter.start_time)) ]
-    [ text (Maybe.withDefault "" chapter.title)
+    [ Table.td [] [ text (toString chapter.start_time)]
+    , Table.td [] [ text (Maybe.withDefault "" chapter.title) ]
     ]
-  ]
