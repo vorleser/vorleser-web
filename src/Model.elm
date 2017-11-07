@@ -32,7 +32,8 @@ type alias Playback = {
 
 type alias LoginViewModel = {
     name : String,
-    password : String
+    password : String,
+    error: Maybe String
 }
 
 type alias LibraryView = {

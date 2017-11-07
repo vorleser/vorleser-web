@@ -33,7 +33,7 @@ main =
 init : (Model, Cmd Msg)
 init =
   (
-  { loginView = LoginViewModel "" ""
+  { loginView = LoginViewModel "" "" Nothing
   , loginToken = Nothing
   , currentView = LoginView
   , mdl = Material.model
@@ -247,7 +247,7 @@ handleLoginError error model =
         in
           case resp.status.code of
             401 ->
-              ({ model | loginView = { login | name = "Invalid password!" } }, Cmd.none)
+              ({ model | loginView = { login | error = Just "Invalid username or password!" } }, Cmd.none)
             _ ->
               (Error.errorSnackbar model "" ("Error " ++ resource ++ ". Bad status code: " ++ resp.status.message))
       Http.Timeout ->
