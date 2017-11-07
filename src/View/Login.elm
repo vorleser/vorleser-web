@@ -40,9 +40,7 @@ view model =
 
 passwordField: Model -> Html Msg.Msg
 passwordField model =
-  case model.loginView.error of
-  Nothing ->
-    Textfield.render Msg.Mdl [0] model.mdl
+  let params = 
     [ Textfield.label "Enter password"
     , Textfield.floatingLabel
     , Textfield.password
@@ -51,19 +49,16 @@ passwordField model =
     , Options.onInput <| Msg.Login << Msg.PasswordChange
     , Options.on "keydown" (Json.Decode.andThen isEnter keyCode)
     ]
-    []
-  Just error ->
-    Textfield.render Msg.Mdl [0] model.mdl
-    [ Textfield.label "Enter password"
-    , Textfield.floatingLabel
-    , Textfield.password
-    , Textfield.value model.loginView.password
-    , Textfield.error error
-    , Options.css "margin" "20px"
-    , Options.onInput <| Msg.Login << Msg.PasswordChange
-    , Options.on "keydown" (Json.Decode.andThen isEnter keyCode)
-    ]
-    []
+  in
+    case model.loginView.error of
+    Nothing ->
+      Textfield.render Msg.Mdl [0] model.mdl
+      params
+      []
+    Just error ->
+      Textfield.render Msg.Mdl [0] model.mdl
+      (params ++ [(Textfield.error error)])
+      []
 
 userField: Model -> Html Msg.Msg
 userField model =
