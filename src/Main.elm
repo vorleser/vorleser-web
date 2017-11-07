@@ -220,18 +220,18 @@ subscriptions model =
 
 chapterDict : List Chapter -> Dict.Dict String (List Chapter)
 chapterDict chapters =
-  let empty_dict =
-    (Dict.fromList (List.map (\c -> (c.audiobook_id, [])) chapters))
-  in
-    (List.foldr
-      (\chapter dict -> Dict.update chapter.audiobook_id (appendIfJust chapter) dict)
-      empty_dict
-      chapters
-    )
+  List.foldr
+    (\chapter dict -> Dict.update chapter.audiobook_id (appendIfJust chapter) dict)
+    Dict.empty
+    chapters
 
 appendIfJust : v -> Maybe (List v) -> Maybe (List v)
 appendIfJust chapter list =
-  Maybe.map (\some -> some ++ [chapter]) list
+  case list of
+    Just l ->
+      Just <| l ++ [chapter]
+    Nothing ->
+      Just [chapter]
 
 
 playstateDict : List Playstate -> Dict.Dict String Playstate
