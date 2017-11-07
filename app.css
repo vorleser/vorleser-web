@@ -1,0 +1,8 @@
+.elm-overlay {
+  z-index: 999;
+}
+.elm-mini-controls {
+  top: 0;
+  right: 20%!important;
+  bottom: auto!important;
+}
