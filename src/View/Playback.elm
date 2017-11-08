@@ -15,6 +15,10 @@ import View.ChapterList
 view: Model -> Html Msg.Msg
 view model =
   let
+    height = if model.playbackView.expanded then
+      "90%"
+    else
+      "10%"
     style_list =
       [ ("bottom", "0")
       , ("position", "fixed")
@@ -22,21 +26,19 @@ view model =
       , ("transition", "height 0.5s ease-in-out")
       , ("background-color", "white")
       , ("display", "flex")
-      , ("align-items", "center")
+      , ("flex-wrap", "wrap")
+      , ("align-items", "stretch")
       , ("justify-content", "space-evenly")
+      , ("height", height)
       ]
-    height = if model.playbackView.expanded then
-      "90%"
-    else
-      "10%"
   in
     (div
-      [ style (style_list ++ [("height", height)])
+      [ style style_list
         , Html.Attributes.classList [
           ("mdl-shadow--16dp", True)
         ]
       ]
-    [
+    ([
       (div
         [ style [
             ("display", "flex")
@@ -60,8 +62,11 @@ view model =
           , (expandButton model)
         ]
       )
-      , (View.ChapterList.view model)
-    ])
+    ] ++ if model.playbackView.expanded then
+         [(View.ChapterList.view model)]
+      else
+        [])
+    )
 
 progressWithTitle: Model -> Html Msg.Msg
 progressWithTitle model =

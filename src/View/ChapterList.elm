@@ -32,8 +32,8 @@ view model =
         model.playback.currentBook)
   in
     (div
-      [ style [("display", "flex"), ("justify-content", "center"), ("flex-wrap", ""), ("align-self", "flex-end")] ]
-      [ Table.table []
+      [ style [("display", "flex"), ("justify-content", "center"), ("width", "90%")] ]
+      [ Table.table [Options.css "width" "90%"]
       [ Table.thead []
         [ Table.tr []
           [ Table.th [] [text "Time"]

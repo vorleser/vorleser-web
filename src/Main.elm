@@ -141,13 +141,13 @@ playbackUpdate msg model =
         else
           ({ model | playback = { state | hasPlayed = True } }, Audio.command (Audio.toJs (Audio.Play)))
     SetPlaying state ->
-      let modelPlayback =
-        model.playback
-      in
-        let newModel =
+      let
+        modelPlayback =
+          model.playback
+        newModel =
           { model | playback = { modelPlayback | playing = state }}
-        in
-          (newModel, Api.updatePlaystates model )
+      in
+        (newModel, Api.updatePlaystates model )
     UpdateProgress new_progress ->
       let modelPlayback =
         model.playback
@@ -175,8 +175,7 @@ playbackUpdate msg model =
       let modelPlayback =
         model.playback
       in
-        (
-          { model | playback = { modelPlayback | volume = volume }}
+        ( { model | playback = { modelPlayback | volume = volume }}
         , Audio.command (Audio.toJs (Audio.SetVolume volume))
         )
 
