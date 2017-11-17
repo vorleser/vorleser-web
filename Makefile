@@ -1,5 +1,5 @@
 watch:
-	watchexec -r --signal SIGKILL make run
+	watchexec --ignore css -r --signal SIGKILL make run
 
 run:
 	elm-make src/Main.elm --debug --output elm.js

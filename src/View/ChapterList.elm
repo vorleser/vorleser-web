@@ -53,6 +53,6 @@ listItem: Model -> Model.Chapter -> Int -> Html Msg.Msg
 listItem model chapter index =
   Table.tr
     [ Options.onClick (Msg.Playback (Msg.SetProgressManually chapter.start_time)) ]
-    [ Table.td [] [ text (toString chapter.start_time)]
+    [ Table.td [ Table.numeric ] [ text (toString chapter.start_time)]
     , Table.td [] [ text (Maybe.withDefault "" chapter.title) ]
     ]

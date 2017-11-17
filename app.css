@@ -1,8 +1,48 @@
 .elm-overlay {
   z-index: 999;
 }
+
 .elm-mini-controls {
   top: 0;
   right: 20%!important;
   bottom: auto!important;
+}
+
+.progress-bar-with-title {
+  display: flex;
+  flex-grow: 0.8;
+  align-items: center;
+  padding-top: 1.4em;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.playback-view {
+  display: flex;
+  flex-grow: 1;
+  padding-top: 2em;
+  justify-content: space-evenly;
+  align-self: flex-start;
+  align-items: center;
+}
+
+.playback-control-list {
+  display: flex;
+  flex-grow: 1;
+  padding-top: 2em;
+  justify-content: space-evenly;
+  align-self: flex-start;
+  align-items: center;
+}
+
+.control-box {
+  bottom: 0;
+  position: fixed;
+  width: 100%;
+  transition: height 0.5s ease-in-out;
+  background-color: white;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: space-evenly;
 }

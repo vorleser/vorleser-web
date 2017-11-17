@@ -1,7 +1,7 @@
 module View.Playback exposing (..)
 import Material.Slider as Slider
 import Msg
-import Html.Attributes exposing (style)
+import Html.Attributes exposing (style, class)
 import Html exposing (Html, div)
 import Model exposing (Model)
 import Material.Grid as Grid
@@ -20,35 +20,18 @@ view model =
     else
       "10%"
     style_list =
-      [ ("bottom", "0")
-      , ("position", "fixed")
-      , ("width", "100%")
-      , ("transition", "height 0.5s ease-in-out")
-      , ("background-color", "white")
-      , ("display", "flex")
-      , ("flex-wrap", "wrap")
-      , ("align-items", "stretch")
-      , ("justify-content", "space-evenly")
-      , ("height", height)
-      ]
+      [ ("height", height) ]
   in
     (div
       [ style style_list
         , Html.Attributes.classList [
-          ("mdl-shadow--16dp", True)
+          ("mdl-shadow--16dp", True),
+          ("control-box", True)
         ]
       ]
     ([
       (div
-        [ style [
-            ("display", "flex")
-          , ("flex-grow", "1")
-          , ("padding-top", "2em")
-          , ("justify-content", "space-evenly")
-          , ("align-self", "flex-start")
-          , ("align-items", "center")
-          ]
-        ]
+        [ class "playback-control-list" ]
         [
             playPauseButton model
           , progressWithTitle model
@@ -61,22 +44,14 @@ view model =
           ]
           , (expandButton model)
         ]
-      )
-    ] ++ if model.playbackView.expanded then
-         [(View.ChapterList.view model)]
-      else
-        [])
+      ),
+      (View.ChapterList.view model)
+    ])
     )
 
 progressWithTitle: Model -> Html Msg.Msg
 progressWithTitle model =
-    (div [style [
-          ("flex-grow", "0.8")
-        , ("display", "flex")
-        , ("align-items", "center")
-        , ("justify-content", "center")
-        , ("flex-direction", "column")
-        ]] [
+    (div [class "progress-bar-with-title"] [
       Slider.view [
           Slider.onChange (\x -> Msg.Playback (Msg.SetProgressManually (x / 1000)))
         , Slider.value (model.playback.progress * 1000)
