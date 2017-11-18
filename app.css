@@ -29,7 +29,7 @@
 .playback-control-list {
   display: flex;
   flex-grow: 1;
-  padding-top: 2em;
+  height: 10vh;
   justify-content: space-evenly;
   align-self: flex-start;
   align-items: center;
@@ -39,10 +39,22 @@
   bottom: 0;
   position: fixed;
   width: 100%;
-  transition: height 0.5s ease-in-out;
+  height: 10%;
+  transition: height 0.2s ease-in-out;
   background-color: white;
+}
+
+.chapter-list-scroll-container {
   display: flex;
-  flex-wrap: wrap;
-  align-items: stretch;
-  justify-content: space-evenly;
+  justify-content: center;
+  margin: auto;
+  margin-top: 3em;
+  width: 80%;
+  height: 76vh;
+  padding: 1em;
+  overflow-y: auto;
+}
+
+.chapter-list-scroll-container table {
+  width: 100%
 }

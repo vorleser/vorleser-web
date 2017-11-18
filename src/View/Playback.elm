@@ -16,7 +16,7 @@ view: Model -> Html Msg.Msg
 view model =
   let
     height = if model.playbackView.expanded then
-      "90%"
+      "calc(100% - 64px)"
     else
       "10%"
     style_list =

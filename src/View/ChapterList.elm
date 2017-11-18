@@ -32,8 +32,8 @@ view model =
         model.playback.currentBook)
   in
     (div
-      [ style [("display", "flex"), ("justify-content", "center"), ("width", "90%")] ]
-      [ Table.table [Options.css "width" "90%"]
+      [ class "chapter-list-scroll-container" ]
+      [ Table.table []
       [ Table.thead []
         [ Table.tr []
           [ Table.th [] [text "Time"]
