@@ -31,7 +31,8 @@ view model =
         , ("max-width", "50%")
         ]
       ]
-      [ (userField model)
+      [ (serverField model)
+        , (userField model)
         , (passwordField model)
         , (loginButton model)
         , (Snackbar.view model.snackbar |> Html.map Msg.Snackbar)
@@ -57,6 +58,28 @@ passwordField model =
       []
     Just error ->
       Textfield.render Msg.Mdl [0] model.mdl
+      (params ++ [(Textfield.error error)])
+      []
+
+serverField: Model -> Html Msg.Msg
+serverField model =
+  let params =
+    [ Textfield.label "Enter Server URL"
+    , Textfield.floatingLabel
+    , Options.css "margin" "20px"
+    , Textfield.value model.loginView.serverUrl
+    , Textfield.text_
+    , Textfield.autofocus
+    , Options.onInput <| Msg.Login << Msg.ServerUrlChange
+    ]
+  in
+    case model.loginView.error of
+    Nothing ->
+      Textfield.render Msg.Mdl [1] model.mdl
+      params
+      []
+    Just error ->
+      Textfield.render Msg.Mdl [1] model.mdl
       (params ++ [(Textfield.error error)])
       []
 

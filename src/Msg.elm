@@ -7,7 +7,7 @@ import Model exposing (..)
 import Date
 import Json.Decode
 
-type LoginViewMsg = Submit | PasswordChange String | NameChange String
+type LoginViewMsg = ServerUrlChange String | Submit | PasswordChange String | NameChange String
 
 type PlaybackMsg
   = TogglePlayback
@@ -24,6 +24,7 @@ type Msg
   = Mdl (Material.Msg Msg)
   | Login (LoginViewMsg)
   | LoggedIn (Result Http.Error Auth.SessionSecret)
+  | UpdateServerUrl String
   | RequestBooks
   | RequestEverything
   | ReceiveAllData (Result Http.Error AllThings)

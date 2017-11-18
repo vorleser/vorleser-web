@@ -14,8 +14,8 @@ import Json.Decode.Pipeline exposing (decode, required, optional)
 import Date.Extra as DateExtra
 import Model exposing (Audiobook, Playstate, AllThings, Chapter)
 
-login : String -> String -> Cmd Msg.Msg
-login user password =
+login : String -> String -> String -> Cmd Msg.Msg
+login user password serverUrl =
   let loginData =
         { email = user, password = password}
   in

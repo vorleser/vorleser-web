@@ -6,6 +6,7 @@ import Json.Decode.Pipeline exposing (decode, required)
 import Config
 import Http
 import Model
+import Util
 
 type alias LoginData =
     {
@@ -34,8 +35,8 @@ post :
     -> Encode.Value
     -> (Result Http.Error a -> msg)
     -> Cmd msg
-post token url decoder body msg =
-    authenticatedApiCall "POST" token url decoder (Http.jsonBody body) msg
+post model url decoder body msg =
+    authenticatedApiCall "POST" model url decoder (Http.jsonBody body) msg
 
 get :
     Model.Model
@@ -43,8 +44,8 @@ get :
     -> Decode.Decoder a
     -> (Result Http.Error a -> msg)
     -> Cmd msg
-get token url decoder msg =
-    authenticatedApiCall "GET" token url decoder Http.emptyBody msg
+get model url decoder msg =
+    authenticatedApiCall "GET" model url decoder Http.emptyBody msg
 
 authenticatedApiCall :
     String
@@ -66,7 +67,7 @@ authenticatedApiCall method model url decoder body msg =
                           headers =
                             [ Http.header "Authorization" secret
                             ],
-                          url = Config.baseUrl ++ url,
+                          url = (Util.baseUrl model.serverUrl) ++ url,
                           expect = Http.expectJson decoder,
                           body = body,
                           timeout = Nothing,

@@ -23,6 +23,7 @@ import Msg exposing (..)
 import Model exposing (..)
 import Audio
 import Session
+import Util
 
 import View.Login
 import View.BookList
@@ -33,9 +34,10 @@ main =
 init : (Model, Cmd Msg)
 init =
   (
-  { loginView = LoginViewModel "" "" Nothing
+  { loginView = LoginViewModel Config.baseUrl "" "" Nothing
   , loginToken = Nothing
   , currentView = LoginView
+  , serverUrl = Config.baseUrl
   , mdl = Material.model
   , books = Dict.empty
   , snackbar = Snackbar.model
@@ -61,10 +63,7 @@ update msg model =
           |> map1st (\s -> { model | snackbar = s })
           |> map2nd (Cmd.map Snackbar)
     Login loginMsg ->
-      let (data, cmd) =
-            (loginViewUpdate loginMsg model.loginView)
-      in
-          ({ model | loginView = data }, cmd)
+      (loginViewUpdate loginMsg model)
     LoggedIn token ->
       case token of
         Ok secret ->
@@ -107,6 +106,8 @@ update msg model =
       ({ model | playbackView = { expanded = True} }, Cmd.none)
     PlaybackViewCollapse ->
       ({ model | playbackView = { expanded = False} }, Cmd.none)
+    UpdateServerUrl s ->
+      ({ model | serverUrl = s }, Cmd.none)
 
 playbackUpdate : PlaybackMsg -> Model -> (Model, Cmd Msg)
 playbackUpdate msg model =
@@ -125,7 +126,7 @@ playbackUpdate msg model =
             ({ model | playback = { modelPlayback | currentBook = Just id, hasPlayed = False, progress = progress }},
               Audio.command
                 (Audio.toJs (Audio.SetFile
-                  (Config.baseUrlData ++ "/" ++ id ++ "?auth=" ++ secret )
+                  ((Util.dataUrl model.serverUrl) ++ "/" ++ id ++ "?auth=" ++ secret )
                   progress
                   model.playback.volume)
                 )
@@ -179,15 +180,26 @@ playbackUpdate msg model =
         , Audio.command (Audio.toJs (Audio.SetVolume volume))
         )
 
-loginViewUpdate : LoginViewMsg -> LoginViewModel -> (LoginViewModel, Cmd Msg)
+loginViewUpdate : LoginViewMsg -> Model -> (Model, Cmd Msg)
 loginViewUpdate msg model =
-  case msg of
-    PasswordChange s ->
-      ({ model | password = s }, Cmd.none)
-    NameChange s ->
-      ({ model | name = s }, Cmd.none)
-    Submit ->
-      (model, Api.login model.name model.password)
+  let login_model =
+      model.loginView
+  in
+    case msg of
+      ServerUrlChange s ->
+        ({ model | loginView = { login_model | serverUrl = s }}, Cmd.none)
+      PasswordChange s ->
+        ({ model | loginView = { login_model | password = s }}, Cmd.none)
+      NameChange s ->
+        ({ model | loginView = { login_model | name = s }}, Cmd.none)
+      Submit ->
+        ( updateServerUrl model login_model.serverUrl
+        , Api.login login_model.name login_model.password login_model.serverUrl
+        )
+
+updateServerUrl : Model -> String -> Model
+updateServerUrl model serverUrl =
+  { model | serverUrl = serverUrl }
 
 view : Model -> Html Msg
 view model =

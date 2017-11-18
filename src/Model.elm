@@ -13,6 +13,7 @@ type alias Model = {
     loginView: LoginViewModel
   , loginToken: Maybe String
   , currentView: View
+  , serverUrl: String
   , mdl: Material.Model
   , books: Dict String Audiobook
   , playstates: Dict String Playstate
@@ -36,6 +37,7 @@ type alias Playback = {
 
 
 type alias LoginViewModel = {
+    serverUrl : String,
     name : String,
     password : String,
     error: Maybe String
