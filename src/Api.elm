@@ -13,6 +13,7 @@ import Json.Decode.Extra as DecodeExtra
 import Json.Decode.Pipeline exposing (decode, required, optional)
 import Date.Extra as DateExtra
 import Model exposing (Audiobook, Playstate, AllThings, Chapter)
+import Util
 
 login : String -> String -> String -> Cmd Msg.Msg
 login user password serverUrl =
@@ -20,7 +21,7 @@ login user password serverUrl =
         { email = user, password = password}
   in
       let request =
-            Http.post (Config.baseUrl ++ "/auth/login")
+            Http.post ((Util.baseUrl serverUrl) ++ "/auth/login")
             (Http.jsonBody <| Auth.loginEncoder loginData)
             Auth.sessionSecretDecoder
       in

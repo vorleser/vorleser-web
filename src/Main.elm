@@ -107,7 +107,7 @@ update msg model =
     PlaybackViewCollapse ->
       ({ model | playbackView = { expanded = False} }, Cmd.none)
     UpdateServerUrl s ->
-      ({ model | serverUrl = s }, Cmd.none)
+      updateServerUrl model s
 
 playbackUpdate : PlaybackMsg -> Model -> (Model, Cmd Msg)
 playbackUpdate msg model =
@@ -193,13 +193,16 @@ loginViewUpdate msg model =
       NameChange s ->
         ({ model | loginView = { login_model | name = s }}, Cmd.none)
       Submit ->
-        ( updateServerUrl model login_model.serverUrl
-        , Api.login login_model.name login_model.password login_model.serverUrl
-        )
+        let (new_model, msg) =
+          updateServerUrl model login_model.serverUrl
+        in
+          ( new_model
+          , Api.login login_model.name login_model.password login_model.serverUrl
+          )
 
-updateServerUrl : Model -> String -> Model
+updateServerUrl : Model -> String -> (Model, Cmd Msg)
 updateServerUrl model serverUrl =
-  { model | serverUrl = serverUrl }
+  ({ model | serverUrl = serverUrl }, Session.saveServerUrl serverUrl)
 
 view : Model -> Html Msg
 view model =
@@ -231,6 +234,7 @@ subscriptions model =
   , Audio.playing (\play -> (Msg.Playback (SetPlaying play)))
   , Audio.ready (\pos -> (Msg.Playback (BookReadyAt pos)))
   , Session.getSession (\key -> (Msg.LoggedIn (Ok { secret = key })))
+  , Session.getServerUrl (\url -> (Msg.UpdateServerUrl url))
   , Time.every (Time.second * Config.playstateUploadInterval) (\_ -> (Msg.Playback UpdateRemotePlaystates))
   ]
 

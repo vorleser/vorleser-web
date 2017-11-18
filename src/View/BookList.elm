@@ -17,6 +17,7 @@ import Material.Snackbar as Snackbar
 import View.Playback
 import Dict
 import Config
+import Util
 
 type alias Mdl =
   Material.Model
@@ -56,7 +57,7 @@ listItem model book index =
     imageUrl =
       case model.loginToken of
         Just secret ->
-          Config.baseUrl ++ "/coverart/" ++ book.id ++ "?auth=" ++ secret
+          (Util.baseUrl model.serverUrl) ++ "/coverart/" ++ book.id ++ "?auth=" ++ secret
         _ ->
           "lol" -- this should be unreachable, TODO: error message or something similar
     button_symbol =
