@@ -197,7 +197,10 @@ loginViewUpdate msg model =
           updateServerUrl model login_model.serverUrl
         in
           ( new_model
-          , Api.login login_model.name login_model.password login_model.serverUrl
+          , Cmd.batch [
+              Api.login login_model.name login_model.password login_model.serverUrl
+            , msg
+          ]
           )
 
 updateServerUrl : Model -> String -> (Model, Cmd Msg)
