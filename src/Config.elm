@@ -3,10 +3,10 @@ name : String
 name = "Vorleser"
 
 baseUrl : String
-baseUrl = "http://localhost:8000/api"
+baseUrl = "http://localhost:8000/"
 
 baseUrlData : String
-baseUrlData = "http://localhost:8000/data"
+baseUrlData = "http://localhost:8000/datasadfasd"
 
 -- interval in which to upload playstates
 playstateUploadInterval : Float

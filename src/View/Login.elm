@@ -41,7 +41,7 @@ view model =
 
 passwordField: Model -> Html Msg.Msg
 passwordField model =
-  let params = 
+  let params =
     [ Textfield.label "Enter password"
     , Textfield.floatingLabel
     , Textfield.password

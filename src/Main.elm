@@ -108,7 +108,9 @@ update msg model =
       ({ model | playbackView = { expanded = False} }, Cmd.none)
     UpdateServerUrl s ->
       updateServerUrl model s
-
+    Startup info ->
+      ({ model | serverUrl = info.serverUrl, loginToken = Just info.loginToken, currentView = BookListView},
+        Api.getEverything { model | serverUrl = info.serverUrl, loginToken = Just info.loginToken })
 playbackUpdate : PlaybackMsg -> Model -> (Model, Cmd Msg)
 playbackUpdate msg model =
   case msg of
@@ -236,6 +238,7 @@ subscriptions model =
   [ Audio.progress (\p -> (Msg.Playback (UpdateProgress p)))
   , Audio.playing (\play -> (Msg.Playback (SetPlaying play)))
   , Audio.ready (\pos -> (Msg.Playback (BookReadyAt pos)))
+  , Session.startupInfo (\info -> (Msg.Startup info))
   , Session.getSession (\key -> (Msg.LoggedIn (Ok { secret = key })))
   , Session.getServerUrl (\url -> (Msg.UpdateServerUrl url))
   , Time.every (Time.second * Config.playstateUploadInterval) (\_ -> (Msg.Playback UpdateRemotePlaystates))

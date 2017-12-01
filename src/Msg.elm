@@ -34,3 +34,4 @@ type Msg
   | Playback (PlaybackMsg)
   | PlaybackViewExpand
   | PlaybackViewCollapse
+  | Startup StartupInfo

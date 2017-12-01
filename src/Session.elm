@@ -1,8 +1,11 @@
 port module Session exposing (..)
+import Model
 import Msg
 
 port saveSession  : String -> Cmd msg
 port getSession : (String -> msg) -> Sub msg
+
+port startupInfo  : (Model.StartupInfo -> msg) -> Sub msg
 
 port saveServerUrl  : String -> Cmd msg
 port getServerUrl : (String -> msg) -> Sub msg

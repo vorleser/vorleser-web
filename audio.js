@@ -1,10 +1,3 @@
-var node = document.getElementById('main');
-var app = Elm.Main.embed(node);
-var audio = new Audio();
-setInterval(() => {
-  sendProgress()
-}, 500);
-
 app.ports.command.subscribe(function(command) {
   if (command.command == "SetFile") {
     audio.pause();

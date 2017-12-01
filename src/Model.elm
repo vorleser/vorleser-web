@@ -86,3 +86,8 @@ type alias Playstate = {
 -- getBookById : String -> Model -> Audiobook
 -- getBookById id model =
 --   List.find (\book -> book.id == id) model.books
+
+type alias StartupInfo = {
+    loginToken: String,
+    serverUrl: String
+}
