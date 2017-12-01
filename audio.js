@@ -1,3 +1,10 @@
+var node = document.getElementById('main');
+var app = Elm.Main.embed(node);
+var audio = new Audio();
+setInterval(() => {
+  sendProgress()
+}, 500);
+
 app.ports.command.subscribe(function(command) {
   if (command.command == "SetFile") {
     audio.pause();
@@ -15,8 +22,7 @@ app.ports.command.subscribe(function(command) {
   } else if (command.command === "Unpause") {
     audio.play();
   } else if (command.command === "SetVolume") {
-    audio.volume = command.arg.volume;
-    return
+    setVolume(command.arg.volume);
   } else if (command.command === "Toggle") {
     if (audio.paused) {
       audio.play();
@@ -29,9 +35,14 @@ app.ports.command.subscribe(function(command) {
   sendPlaying();
 })
 
+function setVolume(volume) {
+  audio.volume = volume
+  app.ports.volume.send(audio.volume)
+  window.localStorage.setItem("volume", volume);
+}
+
 function sendProgress() {
-  // Only send progress if we actually are ready
-  app.ports.progress.send(audio.currentTime)
+  app.ports.progress.send(audio.currentTime || 0)
 }
 
 function sendPlaying() {

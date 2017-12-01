@@ -111,6 +111,7 @@ update msg model =
     Startup info ->
       ({ model | serverUrl = info.serverUrl, loginToken = Just info.loginToken, currentView = BookListView},
         Api.getEverything { model | serverUrl = info.serverUrl, loginToken = Just info.loginToken })
+
 playbackUpdate : PlaybackMsg -> Model -> (Model, Cmd Msg)
 playbackUpdate msg model =
   case msg of
@@ -181,6 +182,11 @@ playbackUpdate msg model =
         ( { model | playback = { modelPlayback | volume = volume }}
         , Audio.command (Audio.toJs (Audio.SetVolume volume))
         )
+    UpdateVolume volume ->
+      let modelPlayback =
+        model.playback
+      in
+        ({ model | playback = { modelPlayback | volume = volume }}, Cmd.none)
 
 loginViewUpdate : LoginViewMsg -> Model -> (Model, Cmd Msg)
 loginViewUpdate msg model =
@@ -236,6 +242,7 @@ subscriptions: Model -> Sub Msg
 subscriptions model =
   Sub.batch
   [ Audio.progress (\p -> (Msg.Playback (UpdateProgress p)))
+  , Audio.volume (\v -> (Msg.Playback (UpdateVolume v)))
   , Audio.playing (\play -> (Msg.Playback (SetPlaying play)))
   , Audio.ready (\pos -> (Msg.Playback (BookReadyAt pos)))
   , Session.startupInfo (\info -> (Msg.Startup info))
@@ -258,7 +265,6 @@ appendIfJust chapter list =
       Just <| [chapter] ++ l
     Nothing ->
       Just [chapter]
-
 
 playstateDict : List Playstate -> Dict.Dict String Playstate
 playstateDict states =

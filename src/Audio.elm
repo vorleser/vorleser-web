@@ -42,5 +42,6 @@ toJs command =
 
 port command  : JsCommand -> Cmd msg
 port progress : (Float -> msg) -> Sub msg
+port volume : (Float -> msg) -> Sub msg
 port playing : (Bool -> msg) -> Sub msg
 port ready : (Float -> msg) -> Sub msg

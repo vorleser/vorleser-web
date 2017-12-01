@@ -16,6 +16,7 @@ type PlaybackMsg
   | UpdateProgress (Float)
   | SetPlaying (Bool)
   | SetVolume (Float)
+  | UpdateVolume (Float)
   | PlayBook (String)
   | BookReadyAt (Float)
   | SetProgressManually (Float)
