@@ -1,7 +1,8 @@
 install:
   - npm install -g elm@0.18
+  - elm-package install -y
 script:
-  make release
+  - elm-make src/Main.elm --yes --output elm.js
 deploy:
   provider: pages
   skip_cleanup: true

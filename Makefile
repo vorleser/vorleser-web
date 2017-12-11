@@ -6,7 +6,8 @@ run:
 	python -m http.server 9901
 
 build:
-	elm-make src/Main.elm --debug --output elm.js
+	elm-make src/Main.elm --yes --debug --output elm.js
 
 release:
-	elm-make src/Main.elm --output elm.js --yes
+	elm --version
+	elm-make src/Main.elm --yes --output elm.js
