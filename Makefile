@@ -9,5 +9,4 @@ build:
 	elm-make src/Main.elm --yes --debug --output elm.js
 
 release:
-	elm --version
 	elm-make src/Main.elm --yes --output elm.js
