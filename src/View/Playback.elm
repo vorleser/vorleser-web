@@ -40,7 +40,7 @@ view model =
             , Slider.value (model.playback.volume * 100)
             , Slider.min 0
             , Slider.max 100
-            , Options.css "flex" "0.1 0.5 2%"
+            , Options.cs "volume"
           ]
           , (expandButton model)
         ]
@@ -58,6 +58,7 @@ progressWithTitle model =
         , Slider.min 0
         , Slider.max ((Maybe.withDefault 0 (currentBookLength model)) * 1000)
         , Options.css "align-self" "stretch"
+        , Options.cs "progress"
       ]
       , (span [Html.Attributes.class "mdl-color-text--grey-700"] [text (currentBookTitle model)])
     ])
