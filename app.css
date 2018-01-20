@@ -36,13 +36,13 @@
   align-items: center;
 }
 
-.playback-control-list.progress {
+.playback-control-list .progress {
   flex-grow: 1
   flex-shrink: 0.5
   flex-basis: 75%
 }
 
-.playback-control-list.volume {
+.playback-control-list .volume {
   flex-grow: 0.5
   flex-shrink: 0.5
   flex-basis: 5%
@@ -68,6 +68,28 @@
   overflow-y: auto;
 }
 
+
 .chapter-list-scroll-container table {
   width: 100%
+}
+
+.login-form-container {
+  margin: auto;
+  display: grid;
+  grid-template-columns: auto fit-content(25%) auto;
+  grid-template-rows: 100%;
+}
+
+.login-form-container .mdl-button {
+  justify-self: end;
+  grid-column-start: 2;
+  grid-column-end: 3;
+}
+
+.login-form-container .login-field {
+  margin: 20px !important;
+  justify-self: center !important;
+  margin: 0 auto;
+  grid-column-start: 2;
+  grid-column-end: 3;
 }
