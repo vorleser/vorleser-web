@@ -33,6 +33,7 @@ view model =
   in
     (div
       [ class "chapter-list-scroll-container" ]
+      -- [ text "lOL WHY IS DIS" ]
       [ Table.table []
       [ Table.thead []
         [ Table.tr []

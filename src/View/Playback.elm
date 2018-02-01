@@ -42,10 +42,8 @@ view model =
             , Slider.max 100
             , Options.cs "volume"
           ]
-          , (expandButton model)
         ]
-      ),
-      (View.ChapterList.view model)
+      )
     ])
     )
 
@@ -74,17 +72,6 @@ playPauseButton model =
   Button.render Msg.Mdl [] model.mdl
   [ Button.icon, Options.onClick (Msg.Playback Msg.TogglePlayback)]
   [ Icon.i icon ]
-
-expandButton: Model -> Html Msg.Msg
-expandButton model =
-  if model.playbackView.expanded then
-    Button.render Msg.Mdl [] model.mdl
-    [ Button.icon, Options.onClick (Msg.PlaybackViewCollapse)]
-    [ Icon.i "keyboard_arrow_down" ]
-  else
-    Button.render Msg.Mdl [] model.mdl
-    [ Button.icon, Options.onClick (Msg.PlaybackViewExpand)]
-    [ Icon.i "keyboard_arrow_up" ]
 
 currentBookTitle : Model -> String
 currentBookTitle model =

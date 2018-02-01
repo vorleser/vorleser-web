@@ -25,6 +25,7 @@ import Audio
 import Session
 import Util
 
+import View.ChapterList
 import View.Login
 import View.BookList
 
@@ -135,8 +136,7 @@ playbackUpdate msg model =
                 )
             )
           _ ->
-            -- todo: display error here, should not be reachable
-            (model, Cmd.none)
+            Debug.crash ("Logged in yet no login token. This is a bug, please report it.")
     BookReadyAt position ->
       let state = model.playback
       in
@@ -232,10 +232,10 @@ view model =
     , drawer = [ Html.text "LOL" ]
     , tabs = ([], [])
     , main = [(case model.currentView of
-      LoginView ->
-        View.Login.view model
-      BookListView ->
-        View.BookList.view model)]
+        LoginView -> View.Login.view model
+        BookListView ->
+            View.BookList.view model
+      )]
     }
 
 subscriptions: Model -> Sub Msg

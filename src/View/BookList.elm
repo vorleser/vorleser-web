@@ -15,6 +15,7 @@ import Material.Icon as Icon
 import Material
 import Material.Snackbar as Snackbar
 import View.Playback
+import View.ChapterList
 import Dict
 import Config
 import Util
@@ -24,21 +25,16 @@ type alias Mdl =
 
 view: Model -> Html Msg.Msg
 view model =
-  (div []
-    [ (div
-      [ style [("display", "flex"), ("justify-content", "center")] ]
-      [ (Lists.ul [
-          Options.css "width" "90%"
-          , Options.css "margin-bottom" "10%"
-        ]
+  (div [class "mainview"]
+    [ (Lists.ul []
         (
         List.map2
         (\book -> \k -> (listItem model book k))
         (Dict.values model.books)
         (List.range 0 (Dict.size model.books))
-        ))
-      ])
+      ))
       , View.Playback.view model
+      , View.ChapterList.view model
       , Snackbar.view model.snackbar |> Html.map Msg.Snackbar
     ]
   )
