@@ -1,5 +1,4 @@
 module Auth exposing (..)
--- import Json.Decode exposing (..)
 import Json.Encode as Encode
 import Json.Decode as Decode
 import Json.Decode.Pipeline exposing (decode, required)

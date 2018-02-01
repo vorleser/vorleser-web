@@ -25,7 +25,7 @@ type alias Mdl =
 
 view: Model -> Html Msg.Msg
 view model =
-  (div [class "mainview"]
+  (div [class "booklist"]
     [ (Lists.ul []
         (
         List.map2
@@ -33,9 +33,6 @@ view model =
         (Dict.values model.books)
         (List.range 0 (Dict.size model.books))
       ))
-      , View.Playback.view model
-      , View.ChapterList.view model
-      , Snackbar.view model.snackbar |> Html.map Msg.Snackbar
     ]
   )
 

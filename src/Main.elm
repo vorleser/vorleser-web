@@ -28,6 +28,7 @@ import Util
 import View.ChapterList
 import View.Login
 import View.BookList
+import View.Main
 
 main =
   Html.program { init = init, view = view, update = update, subscriptions = subscriptions }
@@ -69,7 +70,7 @@ update msg model =
       case token of
         Ok secret ->
           (
-            { model | loginToken = Just secret.secret, currentView = BookListView }
+            { model | loginToken = Just secret.secret, currentView = MainView }
             , Cmd.batch [
                 Api.getEverything { model | loginToken = Just secret.secret }
               , Session.saveSession secret.secret
@@ -110,7 +111,7 @@ update msg model =
     UpdateServerUrl s ->
       updateServerUrl model s
     Startup info ->
-      ({ model | serverUrl = info.serverUrl, loginToken = Just info.loginToken, currentView = BookListView},
+      ({ model | serverUrl = info.serverUrl, loginToken = Just info.loginToken, currentView = MainView},
         Api.getEverything { model | serverUrl = info.serverUrl, loginToken = Just info.loginToken })
 
 playbackUpdate : PlaybackMsg -> Model -> (Model, Cmd Msg)
@@ -233,6 +234,8 @@ view model =
     , tabs = ([], [])
     , main = [(case model.currentView of
         LoginView -> View.Login.view model
+        MainView ->
+            View.Main.view model
         BookListView ->
             View.BookList.view model
       )]

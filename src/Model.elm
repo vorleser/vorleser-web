@@ -4,7 +4,7 @@ import Material.Snackbar as Snackbar
 import Dict exposing (Dict)
 import Date
 
-type View = LoginView | BookListView
+type View = MainView | LoginView | BookListView
 
 type alias Mdl =
     Material.Model
