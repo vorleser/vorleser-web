@@ -31,9 +31,13 @@
 
 .bookinfo {
   grid-area: bookinfo;
-  display: flex;
-  justify-content: center;
-  margin: 2em;
+  display: grid;
+  padding: 0em 2em 0em 2em;
+  grid-template-columns: 50% auto;
+  grid-template-rows: 6em auto;
+  grid-template-areas:
+    "heading        heading"
+    "chapterlist    chapterlist";
 }
 
 .playback-control-list {
@@ -45,6 +49,25 @@
   align-self: flex-start;
   align-items: center;
 }
+
+.bookinfo h3 {
+  grid-area: heading;
+}
+
+.chapterlist {
+  grid-area: chapterlist;
+  margin-left: auto;
+  width: 100% !important;
+}
+
+.chapterlist th {
+  text-align: left !important;
+}
+
+.chapterlist td {
+  text-align: left !important;
+}
+
 
 .playback-control-list .progress {
   flex-grow: 1

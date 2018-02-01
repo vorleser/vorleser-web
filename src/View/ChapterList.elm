@@ -17,6 +17,7 @@ import Material
 import Material.Snackbar as Snackbar
 import Dict
 import Config
+import Util
 
 type alias Mdl =
   Material.Model
@@ -31,10 +32,7 @@ view model =
         (\id -> Maybe.withDefault [] (Dict.get id model.chapters))
         model.playback.currentBook)
   in
-    (div
-      [ class "chapter-list-scroll-container" ]
-      -- [ text "lOL WHY IS DIS" ]
-      [ Table.table []
+      Table.table [ Options.cs "chapterlist"]
       [ Table.thead []
         [ Table.tr []
           [ Table.th [] [text "Time"]
@@ -47,13 +45,12 @@ view model =
           current_chapters
           (List.range 0 (List.length current_chapters))
         )
-      ] ]
-    )
+      ]
 
 listItem: Model -> Model.Chapter -> Int -> Html Msg.Msg
 listItem model chapter index =
   Table.tr
     [ Options.onClick (Msg.Playback (Msg.SetProgressManually chapter.start_time)) ]
-    [ Table.td [ Table.numeric ] [ text (toString chapter.start_time)]
+    [ Table.td [ Table.numeric ] [ text (Util.formatTime chapter.start_time)]
     , Table.td [] [ text (Maybe.withDefault "" chapter.title) ]
     ]

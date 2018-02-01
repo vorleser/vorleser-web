@@ -11,6 +11,7 @@ import Material.Icon as Icon
 import Html exposing (Html, button, div, text, input, span)
 import Dict
 import View.ChapterList
+import Util
 
 view: Model -> Html Msg.Msg
 view model =
@@ -79,7 +80,7 @@ currentBookTitle model =
   "No book playing"
   (case model.playback.currentBook of
     Just id ->
-      Maybe.map .title (Dict.get id model.books)
+      Maybe.map .title (Util.getBookById model id)
     _ ->
       Nothing)
 

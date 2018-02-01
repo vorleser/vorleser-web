@@ -44,9 +44,9 @@ listItem model book index =
     subtitle =
       case book.artist of
         Just author ->
-          author ++ " — (" ++ formatTime book.length ++ ")"
+          author ++ " — (" ++ Util.formatTime book.length ++ ")"
         _ ->
-          "(" ++ formatTime book.length ++ ")"
+          "(" ++ Util.formatTime book.length ++ ")"
     imageUrl =
       case model.loginToken of
         Just secret ->
@@ -92,10 +92,3 @@ playButton model index id button_symbol =
       Play -> "play_circle_outline"
       Pause -> "pause_circle_outline")
   ]
-
-formatTime: Float -> String
-formatTime seconds =
-  let (hours, minutes) =
-    ((round seconds) // 3600, ((round seconds) % 3600) // 60)
-  in
-    (String.padLeft 2 '0' (toString hours)) ++ ":" ++ (String.padLeft 2 '0' (toString minutes))
