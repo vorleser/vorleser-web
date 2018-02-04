@@ -36,3 +36,4 @@ type Msg
   | PlaybackViewExpand
   | PlaybackViewCollapse
   | Startup StartupInfo
+  | Key Int

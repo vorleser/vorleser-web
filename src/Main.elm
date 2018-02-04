@@ -7,6 +7,7 @@ import Html.Events exposing (onClick, onInput)
 import Http exposing (jsonBody)
 import Time
 import Task
+import Keyboard exposing (..)
 
 import Material
 import Material.Snackbar as Snackbar
@@ -113,6 +114,13 @@ update msg model =
     Startup info ->
       ({ model | serverUrl = info.serverUrl, loginToken = Just info.loginToken, currentView = MainView},
         Api.getEverything { model | serverUrl = info.serverUrl, loginToken = Just info.loginToken })
+    Key code ->
+      case model.currentView of
+        MainView ->
+          case code of
+            _ -> (togglePlaying model)
+        _ ->
+          (model, Cmd.none)
 
 playbackUpdate : PlaybackMsg -> Model -> (Model, Cmd Msg)
 playbackUpdate msg model =
@@ -252,6 +260,7 @@ subscriptions model =
   , Session.getSession (\key -> (Msg.LoggedIn (Ok { secret = key })))
   , Session.getServerUrl (\url -> (Msg.UpdateServerUrl url))
   , Time.every (Time.second * Config.playstateUploadInterval) (\_ -> (Msg.Playback UpdateRemotePlaystates))
+  , Keyboard.presses (\code -> Msg.Key code)
   ]
 
 chapterDict : List Chapter -> Dict.Dict String (List Chapter)
@@ -301,3 +310,13 @@ handleLoginError error model =
         (Error.errorSnackbar model "" ("Timeout " ++ resource))
       Http.BadUrl _ ->
         (Error.errorSnackbar model "" "Bad url, how does this even happen?")
+
+togglePlaying : Model -> (Model, Cmd Msg)
+togglePlaying model =
+    let
+      modelPlayback =
+        model.playback
+      newModel =
+        { model | playback = { modelPlayback | playing = not model.playback.playing }}
+    in
+      (newModel, Api.updatePlaystates model )
