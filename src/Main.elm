@@ -118,7 +118,7 @@ update msg model =
       case model.currentView of
         MainView ->
           case code of
-            _ -> (togglePlaying model)
+            _ -> (model, Task.succeed (Msg.Playback TogglePlayback ) |> Task.perform identity)
         _ ->
           (model, Cmd.none)
 
@@ -310,13 +310,3 @@ handleLoginError error model =
         (Error.errorSnackbar model "" ("Timeout " ++ resource))
       Http.BadUrl _ ->
         (Error.errorSnackbar model "" "Bad url, how does this even happen?")
-
-togglePlaying : Model -> (Model, Cmd Msg)
-togglePlaying model =
-    let
-      modelPlayback =
-        model.playback
-      newModel =
-        { model | playback = { modelPlayback | playing = not model.playback.playing }}
-    in
-      (newModel, Api.updatePlaystates model )
