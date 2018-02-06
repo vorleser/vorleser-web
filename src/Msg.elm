@@ -37,3 +37,4 @@ type Msg
   | PlaybackViewCollapse
   | Startup StartupInfo
   | Key Int
+  | LastPlayedInfo String

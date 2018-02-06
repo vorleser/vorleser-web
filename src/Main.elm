@@ -121,6 +121,13 @@ update msg model =
             _ -> (model, Task.succeed (Msg.Playback TogglePlayback ) |> Task.perform identity)
         _ ->
           (model, Cmd.none)
+    LastPlayedInfo id ->
+      case model.playback.currentBook of
+        Nothing ->
+          (playbackUpdate (PlayBook id) model)
+          -- let playback = model.playback
+          -- in ({model | playback = { playback | currentBook = Just id}}, Cmd.none)
+        Just _ -> (model, Cmd.none)
 
 playbackUpdate : PlaybackMsg -> Model -> (Model, Cmd Msg)
 playbackUpdate msg model =
@@ -137,12 +144,15 @@ playbackUpdate msg model =
         case model.loginToken of
           Just secret ->
             ({ model | playback = { modelPlayback | currentBook = Just id, hasPlayed = False, progress = progress }},
+              Cmd.batch [
               Audio.command
                 (Audio.toJs (Audio.SetFile
                   ((Util.dataUrl model.serverUrl) ++ "/" ++ id ++ "?auth=" ++ secret )
                   progress
                   model.playback.volume)
-                )
+                ),
+              Session.saveLastPlayed id
+              ]
             )
           _ ->
             Debug.crash ("Logged in yet no login token. This is a bug, please report it.")
@@ -259,6 +269,7 @@ subscriptions model =
   , Session.startupInfo (\info -> (Msg.Startup info))
   , Session.getSession (\key -> (Msg.LoggedIn (Ok { secret = key })))
   , Session.getServerUrl (\url -> (Msg.UpdateServerUrl url))
+  , Session.getLastPlayed (\id -> (Msg.LastPlayedInfo id))
   , Time.every (Time.second * Config.playstateUploadInterval) (\_ -> (Msg.Playback UpdateRemotePlaystates))
   , Keyboard.presses (\code -> Msg.Key code)
   ]
