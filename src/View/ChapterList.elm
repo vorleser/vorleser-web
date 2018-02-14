@@ -50,7 +50,7 @@ view model =
 listItem: Model -> Model.Chapter -> Int -> Html Msg.Msg
 listItem model chapter index =
   Table.tr
-    [ Options.onClick (Msg.Playback (Msg.SetProgressManually chapter.start_time)) ]
+    [ Options.onClick (Msg.Playback (Msg.SetProgressManually chapter.start_time)),  Options.cs "spoiler"]
     [ Table.td [ Table.numeric ] [ text (Util.formatTime chapter.start_time)]
-    , Table.td [] [ span [ class "spoiler" ] [text (Maybe.withDefault "" chapter.title)] ]
+    , Table.td [] [ span [] [text (Maybe.withDefault "" chapter.title)] ]
     ]

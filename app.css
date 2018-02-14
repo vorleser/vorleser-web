@@ -51,6 +51,10 @@
   align-items: center;
 }
 
+.info-detail {
+  grid-area: detail;
+}
+
 .bookinfo h3 {
   grid-area: heading;
 }
@@ -129,4 +133,5 @@
 
 .spoiler:hover {
   color: black;
+  text-shadow: none;
 }
