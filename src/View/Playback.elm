@@ -34,9 +34,11 @@ view model =
       (div
         [ class "playback-control-list" ]
         [
-            skipBackwardButton model
-          , playPauseButton model
-          , skipFowardButton model
+          (div [class "buttons"] [
+              skipBackwardButton model
+            , playPauseButton model
+            , skipFowardButton model
+          ])
           , progressWithTitle model
           , Slider.view [
               Slider.onChange (\x -> Msg.Playback (Msg.SetVolume (x / 100)))
@@ -67,7 +69,8 @@ progressWithTitle model =
 skipFowardButton: Model -> Html Msg.Msg
 skipFowardButton model =
   Button.render Msg.Mdl [] model.mdl
-  [ Button.icon
+  [ Button.minifab
+    , Button.colored
     , Options.cs "skip-forward"
     , Options.onClick (Msg.Playback <| Msg.SetProgressManually (model.playback.progress + 30))
   ]
@@ -76,7 +79,8 @@ skipFowardButton model =
 skipBackwardButton: Model -> Html Msg.Msg
 skipBackwardButton model =
   Button.render Msg.Mdl [] model.mdl
-  [ Button.icon
+  [ Button.minifab
+    , Button.colored
     , Options.cs "skip-backward"
     , Options.onClick (Msg.Playback <| Msg.SetProgressManually (model.playback.progress - 30))
   ]
@@ -91,7 +95,7 @@ playPauseButton model =
       "play_arrow"
   in
   Button.render Msg.Mdl [] model.mdl
-  [ Button.icon, Options.onClick (Msg.Playback Msg.TogglePlayback)]
+  [ Button.fab, Button.colored, Options.onClick (Msg.Playback Msg.TogglePlayback)]
   [ Icon.i icon ]
 
 currentBookTitle : Model -> String

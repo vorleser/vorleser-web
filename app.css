@@ -105,15 +105,23 @@
 
 
 .playback-control-list .progress {
-  flex-grow: 1
-  flex-shrink: 0.5
-  flex-basis: 75%
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 100%;
+}
+
+.playback-control-list .buttons {
+  flex: 0 0 auto;
+}
+
+.playback-control-list .buttons .mdl-button {
+  margin-left: 0.5em;
+  margin-right: 0.5em;
 }
 
 .playback-control-list .volume {
-  flex-grow: 0.5
-  flex-shrink: 0.5
-  flex-basis: 5%
+  min-width: 100px;
+  flex: 0.1 0 130px;
 }
 
 .control-box {
