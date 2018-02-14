@@ -7,6 +7,12 @@
   bottom: auto!important;
 }
 
+.mdl-layout__header-row {
+  height: 56px !important;
+  max-height: 56px !important;
+  min-height: 56px !important;
+}
+
 .progress-bar-with-title {
   display: flex;
   flex-grow: 0.8;
@@ -18,19 +24,26 @@
 
 .mainview {
   display: grid;
+  margin: none;
   grid-template-columns: 40em auto;
-  grid-template-rows: auto 10%;
+  grid-template-rows: 90% 10%;
   grid-template-areas:
     "booklist         bookinfo"
     "playbackcontrols playbackcontrols";
 }
 
 .mainview ul {
+  overflow-y: scroll;
+  margin: 0;
+  padding: 0;
+  height: calc(100vh - 56px - 10vh);
   grid-area: booklist;
 }
 
 .bookinfo {
   grid-area: bookinfo;
+  overflow-y: scroll;
+  height: calc(100vh - 56px - 10vh);
   display: grid;
   padding: 0em 2em 0em 2em;
   grid-template-columns: 50% auto;
@@ -69,8 +82,8 @@
 
 .chapterlist {
   grid-area: chapterlist;
-  margin-left: auto;
   width: 100% !important;
+  margin-bottom: 2em;
 }
 
 .chapterlist th {
@@ -100,7 +113,7 @@
   z-index: 50;
   position: fixed;
   width: 100%;
-  height: 10%;
+  height: 10vh;
   transition: height 0.2s ease-in-out;
   background-color: white;
 }
