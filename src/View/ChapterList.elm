@@ -3,7 +3,7 @@ module View.ChapterList exposing (..)
 import Model exposing (Model, Mdl)
 import Material.List as Lists
 import Msg
-import Html exposing (Html, button, div, text, input)
+import Html exposing (Html, button, div, text, input, span)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Material.Textfield as Textfield
@@ -52,5 +52,5 @@ listItem model chapter index =
   Table.tr
     [ Options.onClick (Msg.Playback (Msg.SetProgressManually chapter.start_time)) ]
     [ Table.td [ Table.numeric ] [ text (Util.formatTime chapter.start_time)]
-    , Table.td [] [ text (Maybe.withDefault "" chapter.title) ]
+    , Table.td [] [ span [ class "spoiler" ] [text (Maybe.withDefault "" chapter.title)] ]
     ]

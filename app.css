@@ -120,3 +120,13 @@
   grid-column-start: 2;
   grid-column-end: 3;
 }
+
+.spoiler {
+  text-shadow: 0 0 15px #C7C7C7, 0 0 15px #A5A5A5, 0 0 15px #C9C9C9;
+  transition: .3s all;
+  color: transparent;
+}
+
+.spoiler:hover {
+  color: black;
+}
