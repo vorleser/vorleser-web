@@ -80,7 +80,7 @@ type alias Chapter = {
 type alias Playstate = {
     audiobook_id: String,
     position: Float,
-    timestamp: Date.Date -- TODO: this should be a Date
+    timestamp: Date.Date
 }
 
 -- getBookById : String -> Model -> Audiobook

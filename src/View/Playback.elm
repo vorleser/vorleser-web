@@ -34,7 +34,9 @@ view model =
       (div
         [ class "playback-control-list" ]
         [
-            playPauseButton model
+            skipBackwardButton model
+          , playPauseButton model
+          , skipFowardButton model
           , progressWithTitle model
           , Slider.view [
               Slider.onChange (\x -> Msg.Playback (Msg.SetVolume (x / 100)))
@@ -62,6 +64,24 @@ progressWithTitle model =
       , (span [Html.Attributes.class "mdl-color-text--grey-700"] [text (currentBookTitle model)])
     ])
 
+skipFowardButton: Model -> Html Msg.Msg
+skipFowardButton model =
+  Button.render Msg.Mdl [] model.mdl
+  [ Button.icon
+    , Options.cs "skip-forward"
+    , Options.onClick (Msg.Playback <| Msg.SetProgressManually (model.playback.progress + 30))
+  ]
+  [ Icon.i "forward_30" ]
+
+skipBackwardButton: Model -> Html Msg.Msg
+skipBackwardButton model =
+  Button.render Msg.Mdl [] model.mdl
+  [ Button.icon
+    , Options.cs "skip-backward"
+    , Options.onClick (Msg.Playback <| Msg.SetProgressManually (model.playback.progress - 30))
+  ]
+  [ Icon.i "replay_30" ]
+
 playPauseButton: Model -> Html Msg.Msg
 playPauseButton model =
   let icon =
@@ -84,7 +104,7 @@ currentBookTitle model =
           maybe_book = Util.getBookById model id
       in
         case maybe_book of
-          Just book -> Just <| book.title ++ " - " ++ Util.formatPlaybackPosition model.playback.progress book.length
+          Just book -> Just <| book.title ++ " — " ++ Util.formatPlaybackPositionSeconds model.playback.progress book.length
           Nothing -> Nothing
     _ ->
       Nothing)

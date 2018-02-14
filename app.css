@@ -60,6 +60,9 @@
     "chapterlist    chapterlist";
 }
 
+.playback-control-list .skip-forward {
+}
+
 .playback-control-list {
   grid-area: playbackcontrols;
   display: flex;

@@ -16,6 +16,13 @@ dataUrl url =
   else
     url ++ "/data"
 
+formatTimeSeconds: Float -> String
+formatTimeSeconds total_seconds =
+  let
+    seconds = (round total_seconds) % 60
+  in
+    (formatTime total_seconds) ++ ":" ++ (String.padLeft 2 '0' (toString seconds))
+
 formatTime: Float -> String
 formatTime seconds =
   let (hours, minutes) =
@@ -26,6 +33,10 @@ formatTime seconds =
 formatPlaybackPosition: Float -> Float -> String
 formatPlaybackPosition position length =
   "(" ++ formatTime position ++ "/" ++ formatTime length ++ ")"
+
+formatPlaybackPositionSeconds: Float -> Float -> String
+formatPlaybackPositionSeconds position length =
+  "(" ++ formatTimeSeconds position ++ "/" ++ formatTimeSeconds length ++ ")"
 
 getBookById : Model.Model -> String -> Maybe Model.Audiobook
 getBookById model id =
