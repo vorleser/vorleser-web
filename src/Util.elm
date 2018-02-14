@@ -23,6 +23,10 @@ formatTime seconds =
   in
     (String.padLeft 2 '0' (toString hours)) ++ ":" ++ (String.padLeft 2 '0' (toString minutes))
 
+formatPlaybackPosition: Float -> Float -> String
+formatPlaybackPosition position length =
+  "(" ++ formatTime position ++ "/" ++ formatTime length ++ ")"
+
 getBookById : Model.Model -> String -> Maybe Model.Audiobook
 getBookById model id =
   (case model.playback.currentBook of

@@ -45,6 +45,7 @@
   grid-area: playbackcontrols;
   display: flex;
   flex-grow: 1;
+  padding-top: 1.5em;
   justify-content: space-around;
   flex-wrap: nowrap;
   align-self: flex-start;

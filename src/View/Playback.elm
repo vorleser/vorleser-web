@@ -80,7 +80,12 @@ currentBookTitle model =
   "No book playing"
   (case model.playback.currentBook of
     Just id ->
-      Maybe.map .title (Util.getBookById model id)
+      let
+          maybe_book = Util.getBookById model id
+      in
+        case maybe_book of
+          Just book -> Just <| book.title ++ " - " ++ Util.formatPlaybackPosition model.playback.progress book.length
+          Nothing -> Nothing
     _ ->
       Nothing)
 
