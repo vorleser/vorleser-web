@@ -1,6 +1,6 @@
 module View.BookInfo exposing (..)
 
-import Html exposing (Html, button, div, text, input)
+import Html exposing (Html, button, div, text, input, img)
 import Html.Attributes exposing (..)
 import View.Playback
 import View.BookList
@@ -13,6 +13,18 @@ view: Model -> Html Msg.Msg
 view model =
   (div [class "bookinfo"]
     [ title model
+      ,
+        case (model.loginToken, model.playback.currentBook) of
+          (Just secret, Just book_id) ->
+            let
+                book = Util.getBookById model book_id
+            in
+              img [
+                src ((Util.baseUrl model.serverUrl) ++ "/coverart/" ++ book_id ++ "?auth=" ++ secret)
+              ]
+              []
+          (_, _) ->
+            img [ src "default.jpg" ] []
       , View.ChapterList.view model
     ]
   )

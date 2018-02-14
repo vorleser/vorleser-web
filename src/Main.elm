@@ -91,7 +91,7 @@ update msg model =
               books = (bookDict data.books)
             , playstates = (playstateDict data.playstates)
             , chapters = (chapterDict data.chapters)
-            }, Cmd.none
+            }, Session.requestLastPlayed ()
           )
         Err err ->
           Error.handleHttpError err "fetching data" model

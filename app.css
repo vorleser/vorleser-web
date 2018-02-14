@@ -34,9 +34,10 @@
   display: grid;
   padding: 0em 2em 0em 2em;
   grid-template-columns: 50% auto;
-  grid-template-rows: 6em auto;
+  grid-template-rows: 6em 17em auto;
   grid-template-areas:
     "heading        heading"
+    "img            detail"
     "chapterlist    chapterlist";
 }
 
@@ -52,6 +53,13 @@
 
 .bookinfo h3 {
   grid-area: heading;
+}
+
+.bookinfo img {
+  grid-area: img;
+  padding: 0, 1em, 1em, 1em;
+  width: 15em;
+  height: 15em;
 }
 
 .chapterlist {

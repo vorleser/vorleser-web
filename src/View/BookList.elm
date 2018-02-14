@@ -52,7 +52,7 @@ listItem model book index =
         Just secret ->
           (Util.baseUrl model.serverUrl) ++ "/coverart/" ++ book.id ++ "?auth=" ++ secret
         _ ->
-          "lol" -- this should be unreachable, TODO: error message or something similar
+          Debug.crash "This is a bug!" -- this should be unreachable, TODO: error message or something similar
     button_symbol =
       case model.playback.currentBook of
         Just id ->
