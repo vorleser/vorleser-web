@@ -19,6 +19,7 @@ import Api
 import Auth
 import Config
 import Playstates
+import PlaybackBehaviour
 import Error
 import Msg exposing (..)
 import Model exposing (..)
@@ -53,6 +54,7 @@ init =
     , progress = 0
     , hasPlayed = False
     , volume = 1
+    , playbackBehaviour = PlaybackBehaviour.Auto
     }
   }, Cmd.none)
 
@@ -124,7 +126,7 @@ update msg model =
     LastPlayedInfo id ->
       case model.playback.currentBook of
         Nothing ->
-          (playbackUpdate (PlayBook id) model)
+          (playbackUpdate (PlayBook id PlaybackBehaviour.Manual) model)
           -- let playback = model.playback
           -- in ({model | playback = { playback | currentBook = Just id}}, Cmd.none)
         Just _ -> (model, Cmd.none)
@@ -132,7 +134,7 @@ update msg model =
 playbackUpdate : PlaybackMsg -> Model -> (Model, Cmd Msg)
 playbackUpdate msg model =
   case msg of
-    PlayBook id ->
+    PlayBook id autoplay ->
       let
         modelPlayback = model.playback
         progress =
@@ -143,7 +145,7 @@ playbackUpdate msg model =
       in
         case model.loginToken of
           Just secret ->
-            ({ model | playback = { modelPlayback | currentBook = Just id, hasPlayed = False, progress = progress }},
+            ({ model | playback = { modelPlayback | currentBook = Just id, hasPlayed = False, progress = progress, playbackBehaviour = autoplay }},
               Cmd.batch [
               Audio.command
                 (Audio.toJs (Audio.SetFile
@@ -161,8 +163,10 @@ playbackUpdate msg model =
       in
         if state.hasPlayed then
           (model, Cmd.none)
-        else
+        else if state.playbackBehaviour == PlaybackBehaviour.Auto then
           ({ model | playback = { state | hasPlayed = True } }, Audio.command (Audio.toJs (Audio.Play)))
+        else
+          (model, Cmd.none)
     SetPlaying state ->
       let
         modelPlayback =

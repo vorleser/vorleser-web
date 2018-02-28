@@ -4,6 +4,7 @@ import Auth
 import Material
 import Material.Snackbar as Snackbar
 import Model exposing (..)
+import PlaybackBehaviour exposing (PlaybackBehaviour)
 import Date
 import Json.Decode
 
@@ -14,10 +15,10 @@ type PlaybackMsg
   | UpdateLocalPlaystate (Date.Date)
   | UpdateRemotePlaystates
   | UpdateProgress (Float)
-  | SetPlaying (Bool)
+  | SetPlaying Bool
   | SetVolume (Float)
   | UpdateVolume (Float)
-  | PlayBook (String)
+  | PlayBook String PlaybackBehaviour
   | BookReadyAt (Float)
   | SetProgressManually (Float)
 

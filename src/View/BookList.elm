@@ -6,6 +6,7 @@ import Msg
 import Html exposing (Html, button, div, text, input)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
+import PlaybackBehaviour exposing (PlaybackBehaviour)
 import Material.Textfield as Textfield
 import Material.Button as Button
 import Material.Options as Options
@@ -82,7 +83,7 @@ playButton model index id button_symbol =
   [ Button.icon
   , Options.onClick
     (case button_symbol of
-      Play -> (Msg.Playback (Msg.PlayBook id))
+      Play -> (Msg.Playback (Msg.PlayBook id PlaybackBehaviour.Auto))
       Pause -> (Msg.Playback (Msg.TogglePlayback))
     )
   , Options.css "float" "right"
