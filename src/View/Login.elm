@@ -60,6 +60,7 @@ serverField model =
     [ Textfield.label "Enter Server URL"
     , Textfield.floatingLabel
     , Options.cs "login-field"
+    , Options.cs "server-field"
     , Textfield.value model.loginView.serverUrl
     , Textfield.text_
     , Textfield.autofocus
@@ -84,17 +85,16 @@ userField model =
     , Options.cs "login-field"
     , Textfield.value model.loginView.name
     , Textfield.text_
-    , Textfield.autofocus
     , Options.onInput <| Msg.Login << Msg.NameChange
     ]
   in
     case model.loginView.error of
     Nothing ->
-      Textfield.render Msg.Mdl [1] model.mdl
+      Textfield.render Msg.Mdl [2] model.mdl
       params
       []
     Just error ->
-      Textfield.render Msg.Mdl [1] model.mdl
+      Textfield.render Msg.Mdl [2] model.mdl
       (params ++ [(Textfield.error error)])
       []
 
