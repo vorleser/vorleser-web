@@ -20,7 +20,7 @@
   display: grid;
   margin: none;
   grid-template-columns: 40em auto;
-  grid-template-rows: auto 5vh;
+  grid-template-rows: auto 10vh;
   grid-template-areas:
     "booklist         bookinfo"
     "playbackcontrols playbackcontrols";
@@ -60,16 +60,11 @@
     "chapterlist    chapterlist";
 }
 
-.playback-control-list .skip-forward {
-}
-
 .playback-control-list {
   grid-area: playbackcontrols;
   display: flex;
-  flex-grow: 1;
-  padding-top: 1.5em;
+  width: 100%;
   justify-content: space-around;
-  flex-wrap: nowrap;
   align-self: flex-start;
   align-items: center;
 }
@@ -126,12 +121,14 @@
 
 .control-box {
   bottom: 0;
+  align-items: stretch;
   grid-area: playbackcontrols;
   z-index: 50;
   position: fixed;
   width: 100%;
-  height: 10vh;
-  transition: height 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   background-color: white;
 }
 

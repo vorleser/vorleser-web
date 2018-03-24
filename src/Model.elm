@@ -3,6 +3,7 @@ import Material
 import Material.Snackbar as Snackbar
 import Dict exposing (Dict)
 import Date
+import PlaybackBehaviour exposing (PlaybackBehaviour)
 
 type View = MainView | LoginView | BookListView
 
@@ -33,8 +34,8 @@ type alias Playback = {
   , playing: Bool
   , hasPlayed: Bool
   , volume: Float
+  , playbackBehaviour: PlaybackBehaviour -- indicates if we are waiting for the playback element and should start playing once ready
 }
-
 
 type alias LoginViewModel = {
     serverUrl : String,
