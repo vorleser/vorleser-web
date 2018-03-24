@@ -4,7 +4,7 @@ install:
   - elm-package install -y
 script:
   - make release
-  - echo elm-stuff > .gitignore
+  - cat .travis-gitignore > .gitignore # Update gitignore for github pages deployment
 
 deploy:
   provider: pages
