@@ -25,7 +25,9 @@ type PlaybackMsg
 type Msg
   = Mdl (Material.Msg Msg)
   | Login (LoginViewMsg)
+  | Logout
   | LoggedIn (Result Http.Error Auth.SessionSecret)
+  | LoggedOut (Result Http.Error String)
   | UpdateServerUrl String
   | RequestBooks
   | RequestEverything

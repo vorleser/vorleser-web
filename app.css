@@ -1,6 +1,11 @@
 .elm-overlay {
   z-index: 999;
 }
+
+.mdl-snackbar {
+  z-index: 50 !important;
+}
+
 .elm-mini-controls {
   top: 0;
   right: 20%!important;
@@ -123,7 +128,7 @@
   bottom: 0;
   align-items: stretch;
   grid-area: playbackcontrols;
-  z-index: 50;
+  z-index: 10;
   position: fixed;
   width: 100%;
   display: flex;

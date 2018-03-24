@@ -11,6 +11,7 @@ import Keyboard exposing (..)
 
 import Material
 import Material.Snackbar as Snackbar
+import Material.Menu as Menu
 import Material.Helpers exposing (map1st, map2nd)
 import Material.Layout as Layout
 import Material.Snackbar as Snackbar
@@ -31,6 +32,7 @@ import View.ChapterList
 import View.Login
 import View.BookList
 import View.Main
+import View.Drawer
 
 main =
   Html.program { init = init, view = view, update = update, subscriptions = subscriptions }
@@ -69,6 +71,15 @@ update msg model =
           |> map2nd (Cmd.map Snackbar)
     Login loginMsg ->
       (loginViewUpdate loginMsg model)
+    Logout ->
+      (model, Api.logout model)
+    LoggedOut result ->
+      case result of
+        Ok _ ->
+          -- TODO: wipe localstorage
+          init
+        Err err ->
+          handleLogoutError err model
     LoggedIn token ->
       case token of
         Ok secret ->
@@ -245,14 +256,15 @@ view model =
       Layout.row []
       [ Layout.title [] [ text Config.name ]
       , Layout.spacer
-      , Layout.navigation [] [
-          Layout.link
-            [ Layout.href "https://github.com/hatzel/vorleser-web" ]
-            [ Html.span [] [ text "github" ] ]
+      , Menu.render Mdl [100] model.mdl
+        [ Menu.bottomRight ]
+        [ Menu.item
+          [ Menu.onSelect Msg.Logout ]
+          [ text "Logout" ]
         ]
       ]
     ]
-    , drawer = [ Html.text "LOL" ]
+    , drawer = View.Drawer.view model
     , tabs = ([], [])
     , main = [(case model.currentView of
         LoginView -> View.Login.view model
@@ -303,25 +315,29 @@ bookDict books =
 
 handleLoginError :  Http.Error -> Model.Model -> (Model.Model, Cmd Msg.Msg)
 handleLoginError error model =
-  let
-    resource = "logging in"
-  in
-    case error of
-      Http.BadPayload info _ ->
-        Debug.log info
-          (Error.errorSnackbar model "" ("Error " ++  resource ++ ", got an unexpected payload."))
-      Http.NetworkError ->
-        (Error.errorSnackbar model "" ("Error " ++ resource ++ ", check your network connection."))
-      Http.BadStatus resp ->
-        let
-          login = model.loginView
-        in
-          case resp.status.code of
-            401 ->
-              ({ model | loginView = { login | error = Just "Invalid username or password!" } }, Cmd.none)
-            _ ->
-              (Error.errorSnackbar model "" ("Error " ++ resource ++ ". Bad status code: " ++ resp.status.message))
-      Http.Timeout ->
-        (Error.errorSnackbar model "" ("Timeout " ++ resource))
-      Http.BadUrl _ ->
-        (Error.errorSnackbar model "" "Bad url, how does this even happen?")
+  handleNetworkError "logging in" error model
+
+handleLogoutError :  Http.Error -> Model.Model -> (Model.Model, Cmd Msg.Msg)
+handleLogoutError error model =
+  handleNetworkError "logging out" error model
+
+handleNetworkError :  String -> Http.Error -> Model.Model -> (Model.Model, Cmd Msg.Msg)
+handleNetworkError resource error model =
+  case error of
+    Http.BadPayload info _ ->
+      Error.errorSnackbar model "" ("Error " ++  resource ++ ", got an unexpected payload.")
+    Http.NetworkError ->
+      (Error.errorSnackbar model "" ("Error " ++ resource ++ ", check your network connection."))
+    Http.BadStatus resp ->
+      let
+        login = model.loginView
+      in
+        case resp.status.code of
+          401 ->
+            ({ model | loginView = { login | error = Just "Invalid username or password!" } }, Cmd.none)
+          _ ->
+            (Error.errorSnackbar model "" ("Error " ++ resource ++ ". Bad status code: " ++ resp.status.message))
+    Http.Timeout ->
+      (Error.errorSnackbar model "" ("Timeout " ++ resource))
+    Http.BadUrl _ ->
+      (Error.errorSnackbar model "" "Bad url, how does this even happen?")

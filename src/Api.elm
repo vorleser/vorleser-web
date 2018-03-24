@@ -27,6 +27,10 @@ login user password serverUrl =
       in
           Http.send Msg.LoggedIn request
 
+logout : Model.Model -> Cmd Msg.Msg
+logout model =
+  Auth.post model "/auth/logout" Decode.string Encode.null Msg.LoggedOut
+
 getEverything : Model.Model -> Cmd Msg.Msg
 getEverything model =
   Auth.get
