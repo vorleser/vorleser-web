@@ -13,3 +13,4 @@ deploy:
   repo: vorleser/vorleser.github.io
   on:
     branch: master
+  target-branch: master # For the <orgname>.github.io repos you need to deploy to master
