@@ -27,7 +27,7 @@ type Msg
   | Login (LoginViewMsg)
   | Logout
   | LoggedIn (Result Http.Error Auth.SessionSecret)
-  | LoggedOut (Result Http.Error String)
+  | LoggedOut (Result Http.Error ())
   | UpdateServerUrl String
   | RequestBooks
   | RequestEverything

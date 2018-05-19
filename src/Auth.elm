@@ -37,6 +37,15 @@ post :
 post model url decoder body msg =
     authenticatedApiCall "POST" model url decoder (Http.jsonBody body) msg
 
+postEmptyResponse :
+    Model.Model
+    -> String
+    -> Encode.Value
+    -> (Result Http.Error () -> msg)
+    -> Cmd msg
+postEmptyResponse model url body msg =
+    authenticatedApiCallEmptyResponse "POST" model url (Http.jsonBody body) msg
+
 get :
     Model.Model
     -> String
@@ -68,6 +77,37 @@ authenticatedApiCall method model url decoder body msg =
                             ],
                           url = (Util.baseUrl model.serverUrl) ++ url,
                           expect = Http.expectJson decoder,
+                          body = body,
+                          timeout = Nothing,
+                          withCredentials = False
+                        }
+            in
+                Http.send msg request
+
+        _ ->
+            Debug.log "Token required for authenticated request" Cmd.none
+
+authenticatedApiCallEmptyResponse :
+    String
+    -> Model.Model
+    -> String
+    -> Http.Body
+    -> (Result Http.Error () -> msg)
+    -> Cmd msg
+
+authenticatedApiCallEmptyResponse method model url body msg =
+    case model.loginToken of
+        Just secret ->
+            let
+                request =
+                    Http.request
+                        {
+                          method = method,
+                          headers =
+                            [ Http.header "Authorization" secret
+                            ],
+                          url = (Util.baseUrl model.serverUrl) ++ url,
+                          expect = Http.expectStringResponse (\lol -> Ok ()),
                           body = body,
                           timeout = Nothing,
                           withCredentials = False

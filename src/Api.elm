@@ -29,7 +29,7 @@ login user password serverUrl =
 
 logout : Model.Model -> Cmd Msg.Msg
 logout model =
-  Auth.post model "/auth/logout" Decode.string Encode.null Msg.LoggedOut
+  Auth.postEmptyResponse model "/auth/logout" Encode.null Msg.LoggedOut
 
 getEverything : Model.Model -> Cmd Msg.Msg
 getEverything model =

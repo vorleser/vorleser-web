@@ -76,8 +76,12 @@ update msg model =
     LoggedOut result ->
       case result of
         Ok _ ->
-          -- TODO: wipe localstorage
-          init
+          (Tuple.first init,
+            Cmd.batch
+              [ Session.clearSession ()
+              , Audio.command (Audio.toJs Audio.Stop)
+              ]
+          )
         Err err ->
           handleLogoutError err model
     LoggedIn token ->

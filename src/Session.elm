@@ -2,6 +2,8 @@ port module Session exposing (..)
 import Model
 import Msg
 
+port clearSession  : () -> Cmd msg
+
 port saveSession  : String -> Cmd msg
 port getSession : (String -> msg) -> Sub msg
 

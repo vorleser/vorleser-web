@@ -15,6 +15,9 @@ app.ports.command.subscribe(function(command) {
     audio.addEventListener("canplay", () => {
       app.ports.ready.send(audio.position || 0)
     });
+  } else if (command.command === "Stop") {
+    audio.pause()
+    audio = new Audio()
   } else if (command.command === "Play") {
     audio.play();
   } else if (command.command === "Pause") {

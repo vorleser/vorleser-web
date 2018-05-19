@@ -16,7 +16,7 @@ argNothing: Arg
 argNothing =
   { file = Nothing, position =  Nothing, volume = Nothing }
 
-type Command = SetFile String Float Float | Play | Pause | Unpause | SkipTo (Float) | Toggle | SetVolume (Float)
+type Command = SetFile String Float Float | Play | Pause | Unpause | SkipTo (Float) | Toggle | SetVolume (Float) | Stop
 type alias JsCommand =
   { command : String
   , arg : Arg
@@ -39,6 +39,8 @@ toJs command =
       { command = "SkipTo", arg = { file = Nothing, position = Just num,  volume = Nothing } }
     SetVolume num ->
       { command = "SetVolume", arg = { file = Nothing, position = Nothing, volume = Just num } }
+    Stop ->
+      { command = "Stop", arg = argNothing }
 
 port command  : JsCommand -> Cmd msg
 port progress : (Float -> msg) -> Sub msg
