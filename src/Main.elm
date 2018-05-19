@@ -262,10 +262,14 @@ view model =
       , Layout.spacer
       , Menu.render Mdl [100] model.mdl
         [ Menu.bottomRight ]
-        [ Menu.item
-          [ Menu.onSelect Msg.Logout ]
-          [ text "Logout" ]
-        ]
+        (case model.loginToken of
+          Just _ ->
+            [ Menu.item
+              [ Menu.onSelect Msg.Logout ]
+              [ text "Logout" ]
+            ]
+          Nothing ->
+            [])
       ]
     ]
     , drawer = View.Drawer.view model
