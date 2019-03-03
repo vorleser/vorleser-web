@@ -3,7 +3,7 @@ watch:
 
 run:
 	elm-make src/Main.elm --debug --output elm.js
-	python -m http.server 9901
+	python3 -m http.server 9901
 
 build:
 	elm-make src/Main.elm --yes --debug --output elm.js
