@@ -24,12 +24,17 @@ view model =
     []
     [(div
       [ class "login-form-container" ]
-      [ (serverField model)
-        , (userField model)
+      (List.append
+        (if model.loginView.hideUrlField then
+          []
+        else
+          [(serverField model)]
+        )
+        [ (userField model)
         , (passwordField model)
         , (loginButton model)
         , (Snackbar.view model.snackbar |> Html.map Msg.Snackbar)
-      ])
+        ]))
     ])
 
 passwordField: Model -> Html Msg.Msg

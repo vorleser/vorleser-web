@@ -35,15 +35,20 @@ import View.Main
 import View.Drawer
 
 main =
-  Html.program { init = init, view = view, update = update, subscriptions = subscriptions }
+  Html.programWithFlags { init = init, view = view, update = update, subscriptions = subscriptions }
 
-init : (Model, Cmd Msg)
-init =
+type alias Flags = 
+  { serverUrl: String
+  , hideUrlField: Bool
+  }
+
+init : Flags -> (Model, Cmd Msg)
+init flags =
   (
-  { loginView = LoginViewModel Config.baseUrl "" "" Nothing
+  { loginView = LoginViewModel flags.serverUrl flags.hideUrlField "" "" Nothing
   , loginToken = Nothing
   , currentView = LoginView
-  , serverUrl = Config.baseUrl
+  , serverUrl = flags.serverUrl
   , mdl = Material.model
   , books = Dict.empty
   , snackbar = Snackbar.model
@@ -76,7 +81,7 @@ update msg model =
     LoggedOut result ->
       case result of
         Ok _ ->
-          (Tuple.first init,
+          (Tuple.first (init { serverUrl = model.loginView.serverUrl, hideUrlField = model.loginView.hideUrlField }),
             Cmd.batch
               [ Session.clearSession ()
               , Audio.command (Audio.toJs Audio.Stop)
