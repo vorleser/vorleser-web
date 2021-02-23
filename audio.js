@@ -1,5 +1,14 @@
 var node = document.getElementById('main');
-var app = Elm.Main.embed(node);
+
+// the vorleser-server docker container changes these to point to
+// window.location.href and hides the url field
+var flags = {
+  serverUrl: "",
+  hideUrlField: false,
+};
+
+var app = Elm.Main.embed(node, flags);
+
 var audio = new Audio();
 setInterval(() => {
   sendProgress()

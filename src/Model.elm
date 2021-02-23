@@ -39,6 +39,7 @@ type alias Playback = {
 
 type alias LoginViewModel = {
     serverUrl : String,
+    hideUrlField: Bool,
     name : String,
     password : String,
     error: Maybe String
